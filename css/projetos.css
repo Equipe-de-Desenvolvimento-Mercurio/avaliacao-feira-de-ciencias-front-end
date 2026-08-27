@@ -1,0 +1,306 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f7f8fa;
+    color: #222;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid rgba(182, 180, 180, 0.46);
+}
+
+
+
+
+.feira {
+    font-family: 'Poppins', sans-serif;
+    color: #cc4c04;
+    font-size: 25px;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 15px;
+    padding-right: 10px;
+}
+
+.icone-feira {
+    font-size: 25px;
+    margin-left: 15px;
+    margin-bottom: -45px;
+    position: relative;
+    bottom: -15px;
+    color: #cc4c04;
+}
+
+
+
+
+.texto-inicial h2 {
+    font-size: 26px;
+    margin-left: 15px;
+}
+
+.texto-inicial p {
+    margin-left: 15px;
+    margin-top: -10px;
+}
+
+
+
+.busca {
+    display: flex;
+    gap: 5px;
+    padding: 10px 15px;
+    background-color: white;
+    margin: 25px;
+    margin-left: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(128, 128, 128, 0.671);
+}
+
+.busca input {
+    border: none;
+    background: none;
+    width: 100%;
+    outline: none;
+}
+
+.icone-busca {
+    color: grey;
+}
+
+.categorias {
+    margin-left: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.categorias > button {
+    padding: 5px 20px;
+    background-color: #cc4d0455;
+    border: 1px solid #ab4103;
+    border-radius: 30px;
+}
+
+#select {
+    background-color: #cc4c04;
+}
+
+
+
+.projeto-braço {
+    background-color: #fff;
+    padding: 1px 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+    height: 195px;
+    margin-top: 35px;
+    border-radius: 10px;
+    border: #c4c4c4ce solid 1px;
+    box-shadow: 1px 5px 10px #c4c4c4e0;
+}
+
+.projeto-planta {
+    background-color: #fff;
+    padding: 1px 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+    height: 230px;
+    margin-top: 35px;
+    border-radius: 10px;
+    border: #c4c4c4ce solid 1px;
+    box-shadow: 1px 5px 10px #c4c4c4e0;
+}
+
+
+.avali-planta {
+    display: flex;
+    justify-content: center;
+}
+
+.avali-planta > button {
+    padding: 10px 125px;
+    border-radius: 10px;
+    border: 1px solid #cc4c04;
+    background-color: #cc4d0431;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.avali-planta > button i {
+    margin: 0;
+    font-size: 14px;
+    color: #cc4c04;
+}
+
+.avali-planta> button span {
+    font-size: 14px;
+    color: #cc4c04;
+}
+
+
+.materia {
+    padding: 10px;
+    height: 25px;
+    width: 95px;
+    background-color: #f05b0580;
+    text-align: center;
+    font-size: 13px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.status {
+    display: flex;
+    margin-top: -35px;
+    justify-content: space-around;
+    margin-left: 235px;
+    height: 25px;
+    width: 85px;
+    background-color: #f0050580;
+    text-align: center;
+    font-size: 13px;
+    border-radius: 15px;
+    align-items: center;
+    
+    color: rgb(70, 12, 12);
+}
+
+.status-planta{
+     display: flex;
+    margin-top: -35px;
+    justify-content: space-around;
+    margin-left: 235px;
+    height: 25px;
+    width: 85px;
+    background-color: #034d925e;
+    text-align: center;
+    font-size: 13px;
+    border-radius: 15px;
+    align-items: center;
+    color: rgb(22, 0, 145);
+}
+
+.projeto-braço h3,
+.projeto-planta h3 {
+    margin-left: 3px;
+    margin-top: -5px;
+    font-size: 19px;
+}
+
+
+
+.informacoes {
+    position: relative;
+}
+
+.icone-grupo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: rgb(128, 128, 128);
+}
+
+.icone-prof {
+    position: absolute;
+    left: 0;
+    top: 25px;
+    color: rgb(128, 128, 128);
+}
+
+.especificaçoes {
+    margin-left: 25px;
+    margin-top: 10px;
+}
+
+
+
+.avaliar {
+    display: flex;
+    justify-content: center;
+}
+
+.avaliar > button {
+    padding: 10px 135px;
+    border-radius: 10px;
+    border: none;
+    background-color: #cc4c04;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.avaliar > button i {
+    margin: 0;
+    font-size: 14px;
+}
+
+.avaliar > button span {
+    font-size: 14px;
+}
+
+
+
+footer {
+    margin-top: 35px;
+}
+
+.footer {
+    background-color: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 0 1px #c4c4c4;
+    border: 1px solid #c4c4c4;
+
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+
+    justify-content: center;
+    align-items: center;
+
+    column-gap: 40px;
+}
+
+
+
+.inicio,
+.projetos,
+.avaliaçoes,
+.perfil {
+    border: none;
+    outline: none;
+    background-color: #fff;
+    color: #333;
+}
+
+
+.icone-houme,
+.icone-projetos,
+.icone-avaliaçoes,
+.icone-perfil {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #333333ab;
+}
