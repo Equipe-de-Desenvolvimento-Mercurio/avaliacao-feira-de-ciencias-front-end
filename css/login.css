@@ -1,0 +1,335 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'poppins';
+}
+
+
+
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+
+
+
+.lado-esquerdo {
+  width: 40%;
+  height: 100%;
+  background-color: #cc4c04;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px;
+}
+.lado-esquerdo p {
+  width: 350px;
+}
+
+
+
+
+.lado-esquerdo h1{
+    font-weight: 700;
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+
+
+
+.lado-esquerdo p {
+  font-size: 12px;
+
+
+}
+
+
+.texto-esquerda p {
+    margin-bottom: 40px;
+
+
+}
+
+
+.icone-esquerdo{
+    width: 60px;
+    height: 60px;
+    background-color: rgba(67, 69, 70, 0.328);
+    display: flex ;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+
+
+
+.lado-direito {
+  width: 60%;
+  height: 100%;
+  background-color: #fff;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+.login-card {
+  padding: 45px 50px;
+  background-color: #fafafa2a;
+  border-radius: 18px;
+ 
+  color: #000;
+  box-shadow: 0px 1px 15px #33333341;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid #6362623b;
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+.login{
+    color: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 170px;
+  margin-bottom: 25px;
+
+
+
+
+}
+
+
+
+
+.campo-email input{
+ width: 100%;
+ border: 1px solid #7a7a79a0;
+ border-radius: 9px;
+ padding: 6px 10px;
+ font-size: 21px;
+ outline: none;
+ margin-bottom: 10px;
+
+
+
+
+ 
+}
+
+
+
+
+
+
+.campo-email label{
+    font-size: 12px
+}
+
+
+
+
+.icone-email {
+    position: relative;
+
+
+}
+
+
+
+
+.icone-email i {
+    position: absolute;
+    left: 15px;
+    top: 43%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: #7a7a79a0;
+   
+}
+
+
+
+
+.icone-email input {
+    padding-left: 45px;
+}
+
+
+
+
+.icone-email i {
+    color: #7a7a79a0;
+}
+
+
+
+
+.campo-senha input{
+   width: 100%;
+ border: 1px solid #7a7a79a0;
+ border-radius: 9px;
+ padding: 6px 10px;
+ font-size: 21px;
+ outline: none;
+
+
+
+
+}
+
+
+
+
+.campo-senha label{
+  font-size: 12px;
+
+
+
+
+}
+.icone-senha {
+    position: relative;
+    color: #7a7a79a0;
+}
+
+
+
+
+.icone-senha i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    color: #7a7a79a0;
+}
+
+
+
+
+.icone-senha input {
+    padding-left: 45px;
+}
+
+
+
+
+
+
+.entrar{
+width: 100%;
+ border-radius: 7px;
+ padding: 7px 10px;
+ font-size: 15px;
+ outline: none;
+ color: #fff;
+ background-color: #cc4c04;
+ margin-top: 15px;
+ border: none;
+ margin-top: 25px;
+ cursor: pointer;
+ 
+}
+
+
+.entrar:hover{
+    background-color: #b04203;
+}
+
+
+
+
+.problema{
+  color: #000;
+  margin-top: 20px;
+  font-size: 15px;
+}
+
+
+
+
+
+
+@media (max-width: 600px) {
+
+    .container {
+        align-items: center;
+        justify-content: center;
+
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .lado-esquerdo {
+        display: none;
+        width: 100%;
+        height: auto;
+        padding: 30px;
+    }
+
+    .lado-esquerdo p {
+        width: 100%;
+    }
+
+    .lado-direito {
+        width: 100%;
+        height: auto;
+        padding: 30px 20px;
+    }
+
+    .login-card {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 35px 25px;
+        width: 100%;
+    }
+
+    .login {
+        margin-right: 0;
+    }
+
+    .campo-email input,
+    .campo-senha input {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .entrar {
+        width: 100%;
+    }
+}

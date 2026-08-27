@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/login.css" />
+    <title>Login</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="lado-esquerdo">
+        <div class="icone-esquerdo">
+          <i class="fa-solid fa-flask"></i>
+        </div>
+
+        <div class="texto-esquerda">
+          <h1>PLATAFORMA SIC</h1>
+
+          <p>
+            Plataforma unificada de gestão para feiras de ciências e mostras
+            tecnológicas. Acompanhe projetos, gerencie avaliadores e emita
+            relatórios com precisão institucional.
+          </p>
+        </div>
+      </div>
+
+      <section class="lado-direito">
+        <div class="login">
+          <h1>Bem-vindo!</h1>
+          <p>Entre para acessar o sistema</p>
+        </div>
+
+        <div class="login-card">
+          <form action="login" method="POST">
+            <div class="campo-email">
+              <label for="email"><b>E-mail</b></label>
+
+              <div class="icone-email">
+                <i class="fa-regular fa-envelope"></i>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="seu@email.com"
+                  required
+                />
+              </div>
+            </div>
+            <div class="campo-senha">
+              <label for="senha"><b>Senha</b></label>
+
+              <div class="icone-senha">
+                <i class="fa-solid fa-lock"></i>
+                <input
+                  type="password"
+                  id="senha"
+                  name="senha"
+                  placeholder="*******"
+                  required
+                />
+              </div>
+            </div>
+            <button class="entrar" type="submit">Entrar ➜</button>
+          </form>
+        </div>
+
+        <div class="problema">
+          <p>Problemas para acessar? Contate nosso suporte.</p>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
