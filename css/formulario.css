@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f7f8fa;
+    color: #222;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid rgba(182, 180, 180, 0.46);
+}
+
+
+
+
+.feira {
+    font-family: 'Poppins', sans-serif;
+    color: #cc4c04;
+    font-size: 25px;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 15px;
+    padding-right: 10px;
+}
+
+.icone-feira {
+    font-size: 25px;
+    margin-left: 15px;
+    margin-bottom: -45px;
+    position: relative;
+    bottom: -15px;
+    color: #cc4c04;
+}
+
+
+
+.texto-inicial {
+    margin-left: 20px;
+}
+.texto-inicial h3{
+    margin-bottom: -10px;
+    font-size: 15px;
+    margin-left: -5px;
+
+}
+
+.categorias {
+    margin-left: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.categorias > button {
+    padding: 5px 15px;
+    background-color: #c74b046e;
+    border-radius: 30px;
+    border: none;
+}
+
+#select {
+    background-color: #f85d047e;
+}
+
+.caixa{
+    margin-bottom: 30px;
+    padding: 5px 20px;
+    height: 180px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+    border: none;
+    border: #c4c4c4ce solid 1px;
+    box-shadow: 1px 1px 10px #c4c4c49a;
+}
+
+.caixa h2{
+    margin-bottom: -10px;
+}
+
+.botoes{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    gap: -10px;
+}
+
+.botoes > button{
+    display: flex;
+    padding: 16px 23px;
+    border-radius: 10px;
+    border: 2px solid #c4c4c4;
+    background-color: rgb(255, 255, 254);
+
+}
+
