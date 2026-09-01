@@ -1,22 +1,22 @@
 <!doctype html>
+
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <link rel="stylesheet" href="formulario.css" />
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="css/formulario.css"/>
 
     <link
       rel="stylesheet"
-      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css"
-    />
-    <title>formulario</title>
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css"/>
+
+    <title>Formulário</title>
   </head>
+
   <body>
     <header>
       <div class="icone-feira">
@@ -25,76 +25,175 @@
 
       <h1 class="feira">Feira de ciência</h1>
 
-      <hr class="hr" />
+      <hr class="hr"/>
     </header>
 
     <main>
       <div class="texto-inicial">
         <h3 class="h2-inicial">AVALIANDO PROJETO #042</h3>
+
         <h2>
-          Sistema de Irrigaçao <br />
-          Inteliegnete
+          Sistema de Irrigação <br/>
+          Inteligente
         </h2>
       </div>
 
       <div class="categorias">
         <button id="select" type="button">Agronomia</button>
+
         <button type="button">Ensino Médio</button>
       </div>
 
       <div class="caixa">
         <h2>Criatividade</h2>
+
         <p>O projeto apresenta uma abordagem inovadora para o problema?</p>
 
         <div class="botoes">
-          <button type="button">1</button>
-          <button type="button">2</button>
-          <button type="button">3</button>
-          <button type="button">4</button>
-          <button type="button">5</button>
+          <input
+            type="radio"
+            id="criatividade1"
+            name="criatividade"
+            value="1"/>
+          <label for="criatividade1">1</label>
+
+          <input
+            type="radio"
+            id="criatividade2"
+            name="criatividade"
+            value="2"/>
+          <label for="criatividade2">2</label>
+
+          <input
+            type="radio"
+            id="criatividade3"
+            name="criatividade"
+            value="3"/>
+          <label for="criatividade3">3</label>
+
+          <input
+            type="radio"
+            id="criatividade4"
+            name="criatividade"
+            value="4"/>
+          <label for="criatividade4">4</label>
+
+          <input
+            type="radio"
+            id="criatividade5"
+            name="criatividade"
+            value="5"/>
+          <label for="criatividade5">5</label>
         </div>
       </div>
-
       <div class="caixa">
         <h2>Metodologia</h2>
+
         <p>O método científico foi aplicado de forma rigorosa e clara?</p>
 
-        <div class="botoes">
-          <button type="button">1</button>
-          <button type="button">2</button>
-          <button type="button">3</button>
-          <button type="button">4</button>
-          <button type="button">5</button>
+        <div class="botoes2">
+          <input type="radio" id="metodologia1" name="metodologia" value="1" />
+          <label for="metodologia1">1</label>
+
+          <input type="radio" id="metodologia2" name="metodologia" value="2" />
+          <label for="metodologia2">2</label>
+
+          <input type="radio" id="metodologia3" name="metodologia" value="3" />
+          <label for="metodologia3">3</label>
+
+          <input type="radio" id="metodologia4" name="metodologia" value="4" />
+          <label for="metodologia4">4</label>
+
+          <input type="radio" id="metodologia5" name="metodologia" value="5" />
+          <label for="metodologia5">5</label>
         </div>
       </div>
 
       <div class="caixa">
         <h2>Relevância</h2>
+
         <p>Qual o impacto social ou científico da solução proposta?</p>
 
-        <div class="botoes">
-          <button type="button">1</button>
-          <button type="button">2</button>
-          <button type="button">3</button>
-          <button type="button">4</button>
-          <button type="button">5</button>
+        <div class="botoes3">
+          <input type="radio" id="relevancia1" name="relevancia" value="1"/>
+          <label for="relevancia1">1</label>
+
+          <input type="radio" id="relevancia2" name="relevancia" value="2"/>
+          <label for="relevancia2">2</label>
+
+          <input type="radio" id="relevancia3" name="relevancia" value="3" />
+          <label for="relevancia3">3</label>
+
+          <input type="radio" id="relevancia4" name="relevancia" value="4"/>
+          <label for="relevancia4">4</label>
+
+          <input type="radio" id="relevancia5" name="relevancia" value="5"/>
+          <label for="relevancia5">5</label>
         </div>
       </div>
 
       <div class="caixa">
         <h2>Apresentação</h2>
+
         <p>Os alunos demonstraram domínio sobre o tema exposto?</p>
 
         <div class="botoes">
-          <button type="button">1</button>
-          <button type="button">2</button>
-          <button type="button">3</button>
-          <button type="button">4</button>
-          <button type="button">5</button>
+          <input
+            type="radio"
+            id="apresentacao1"
+            name="apresentacao"
+            value="1"
+          />
+          <label for="apresentacao1">1</label>
+          <input
+            type="radio"
+            id="apresentacao2"
+            name="apresentacao"
+            value="2"/>
+          <label for="apresentacao2">2</label>
+          <input
+            type="radio"
+            id="apresentacao3"
+            name="apresentacao"
+            value="3"
+          />
+          <label for="apresentacao3">3</label>
+          <input
+            type="radio"
+            id="apresentacao4"
+            name="apresentacao"
+            value="4"
+          />
+          <label for="apresentacao4">4</label>
+
+          <input
+            type="radio"
+            id="apresentacao5"
+            name="apresentacao"
+            value="5"
+          />
+          <label for="apresentacao5">5</label>
         </div>
+
+        <h3>Observações Adicionais</h3>
+
+        <div class="observaçoes">
+          <textarea
+            name="observacoes"
+            id="observacoes"
+            placeholder="Adicione comentários sobre o projeto (opcional)..."
+          ></textarea>
+        </div>
+
+        <footer>
+          <div class="enviar">
+            <button type="button">
+              <i class="fa-regular fa-circle-check"></i>
+              Enviar Avaliação
+            </button>
+          </div>
+        </footer>
       </div>
-
-
     </main>
   </body>
 </html>
