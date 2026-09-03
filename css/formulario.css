@@ -205,14 +205,83 @@ hr {
     border-color: #cc4c04;
 }
 
+.caixa-5{
+    margin-bottom: 30px;
+    padding: 5px 20px;
+    height: 200px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-radius: 20px;
+    border: none;
+    border: #c4c4c4ce solid 1px;
+    box-shadow: 1px 1px 10px #c4c4c49a;
+}
 
-h3{
-    margin-top: 40px;
-     margin-left: -20px;
+.caixa-5 h2{
+    margin-bottom: -10px;
+}
+
+.botoes5 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.botoes5 input[type="radio"] {
+    display: none;
+}
+
+.botoes5 label {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-width: 140px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 2px solid #c4c4c4;
+    background-color: rgb(255, 255, 254);
+    color: #333333;
+  
+}
+
+.botoes5 label:hover {
+    border-color: #cc4c04;
+    transform: translateY(-2px);
+}
+
+.botoes5 input[type="radio"]:checked + label {
+    background-color: #cc4c04;
+    color: #ffffff;
+    border-color: #cc4c04;
+  
 }
 
 
+h3{
+    margin-top: 40px;
+     margin-left: 20px;
+}
+
+.observaçoes{
+    display: flex;
+    flex-direction: center;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 20px;
+    margin-bottom: 25px;
+
+    }
+
 .observaçoes > textarea{
+     display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: -15px;
     margin-left: -15px;
     width: 110%;
