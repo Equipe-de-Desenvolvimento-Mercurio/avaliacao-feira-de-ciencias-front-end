@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/Criar-projeto.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
+    <link rel="shortcut icon" href="assets/images/favicon-mercurio.png" type="image/x-icon">
+    <title>Projetos</title>
+</head>
+
+<body>
+    <div class="navegador">
+        <div class="logo">
+            <img src="assets/images/Logo-mercurio.jpg" alt="Logo Mercúrio">
+            <div class="texto-logo">
+                <h3>Colégio Mercúrio</h3>
+                <p>Plataforma Sic</p>
+            </div>
+        </div>
+        <div id="navegador">
+            <button class="btn""><i class=" fi fi-sr-square-poll-vertical"></i>DashBoard</button>
+            <button class="btn"><i class="fi fi-bs-flask"></i>Projetos</button>
+            <button class="btn"> <i class="fi fi-sr-user"></i>Professores</button>
+            <button class="btn"> <i class="fi fi-sr-chart-simple"></i>Rank</button>
+        </div>
+    </div>
+    <div class="pagina-principal">
+        <header>
+            <div class="cabeca">
+                <h2>SIC Manegement</h2>
+            </div>
+            <div class="icon">
+                <input placeholder="Buscar..." type="text">
+                <i class="fi fi-rs-bell"></i>
+                <i class="fi fi-rr-settings"></i>
+                <div class="perfil">
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="titulo">
+                Projeto > Novo Projeto
+                <h1>Criar Novo Projeto</h1>
+                <p>Preencha os detalhes abaixo para registrar um novo projeto para a feira de ciências.</p>
+            </div>
+            <div class="box-projeto">
+                <div class="projeto-detalhes">
+                    <h2>Detalhes do Projeto</h2>
+                    <form>
+                        <label for="#">Nome do Projeto *</label>
+                        <input type="text" placeholder="e.g., solar  powered water  purificado">
+                        <div>
+                            <label for="#">Descrição *</label>
+                            <textarea
+                                placeholder="Forneça um resumo detalhado dos objetivos e da metodologia do projeto..."
+                                id="w3review" name="w3review" rows="20 "></textarea>
+                        </div>
+                    </form>
+                    <div class="aviso">
+                        <i class="fi fi-rr-exclamation"></i> A descrição ficará visível aos avaliadores antes da feira.
+                        Certifique-se de que ela reflita com precisão a documentação enviada.
+                    </div>
+                </div>
+                <div class="classificado">
+                    <h2>Classificado</h2>
+                    <form>
+                        <label>Categoria</label>
+                        <select>
+                            <option value="">selecione a categoria</option>
+                        </select>
+                        <div id="op">
+                            <label>Professor responsavel</label>
+                            <select>
+                                <option value="">selecione o professor</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="upload">
+                        <i class="fi fi-rr-cloud-download-alt"></i>
+                        <p>Enviar imagem de capa (opcional) <br>PNG, JPG até 5 MB</p>
+                    </div>
+                    
+                </div>  
+            </div>
+            <div class="buttons">
+                <button id="button-cancelar" class="btn1 ">Cancelar</button>
+                <button id="button-arquivo" class="btn1 "><i class="fi fi-rr-file-invoice"></i>Salvar projeto</button>
+            </div>
+            
+        </main>
+</body>
+
+</html>

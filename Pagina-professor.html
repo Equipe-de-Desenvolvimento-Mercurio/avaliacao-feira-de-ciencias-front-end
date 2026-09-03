@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/Pagina-professor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
+    <link rel="shortcut icon" href="assets/images/favicon-mercurio.png" type="image/x-icon">
+    <title>Pagina-Professor</title>
+</head>
+
+<body>
+    <div class="navegador">
+        <div class="logo">
+            <img src="assets/images/Logo-mercurio.jpg" alt="Logo Mercúrio">
+            <div class="texto-logo">
+                <h3>Colégio Mercúrio</h3>
+                <p>Plataforma Sic</p>
+            </div>
+        </div>
+        <div id="navegador">
+            <button class="btn""><i class=" fi fi-sr-square-poll-vertical"></i>DashBoard</button>
+            <button class="btn"><i class="fi fi-bs-flask"></i>Projetos</button>
+            <button class="btn"> <i class="fi fi-sr-user"></i>Professores</button>
+            <button class="btn"> <i class="fi fi-sr-chart-simple"></i>Rank</button>
+            <a href="http://127.0.0.1:5500/pagina-principal/Pagina-principal.html"><button class="btn"> <i
+                        class="fi fi-sr-chart-simple"></i>voltar</button></a>
+        </div>
+    </div>
+    <div class="pagina-principal">
+        <header>
+            <div class="cabeca">
+                <h2>SIC Manegement</h2>
+            </div>
+            <div class="icon">
+                <input placeholder="Buscar..." type="text">
+                <i class="fi fi-rs-bell"></i>
+                <i class="fi fi-rr-settings"></i>
+                <div class="perfil">
+                </div>
+            </div>
+        </header>
+        <main>
+
+            <div class="titulo">
+                <h1>Professores</h1>
+                <div class="paragrafo">
+                    <p>Gerencie membros do corpo docente e suas atribuições de projeto</p>
+                    <button id="btn-prof">+ Novo professor</button>
+                </div>
+            </div>
+
+            <div class="box-main">
+                <div class="seletores">
+                    <button>Todos Departamento</button>
+                    <select name="Status" id="">
+                        <optgroup>
+                            <option value="m">Status: Ativo</option>
+                        </optgroup>
+                    </select>
+                    <span>Exibindo 1-5 de 42</span>
+                </div>
+                <div class="top">
+                    <P>Nome</P>
+                    <P>Email</P>
+                    <P>Projetos</P>
+                    <P>Ações</P>
+                </div>
+
+                <div class="lista">
+                    <div class="registro">
+                        <div class="info" id="info-nome">
+                            <div class="perfil"></div>
+                            <div class="nome">
+                                <h4>Ana Silva</h4>
+                                <p>Biologia Dept</p>
+                            </div>
+                        </div>
+                        <div class="info" id="info-email">
+                            <p>ana.silva@school.edu</p>
+                        </div>
+                        <div class="info" id="info-projetos">
+                            <div class="contagem" id="pessoa1">
+                                <p>3</p>
+                            </div>
+                        </div>
+                        <div class="info" id="info-acoes">
+                            <!-- <button class="ver">
+                                i
+                            </button> -->
+                        </div>
+                    </div>
+
+                    <div class="registro">
+                        <div class="info" id="info-nome">
+                            <div class="perfil"></div>
+                            <div class="nome">
+                                <h4>Calos Henrique</h4>
+                                <p>Geografia Dep </p>
+                            </div>
+                        </div>
+                        <div class="info" id="info-email">
+                            <p>carlos.o@school.edu</p>
+                        </div>
+                        <div class="info" id="info-projetos">
+                            <div class="contagem" id="pessoa1">
+                                <p>3</p>
+                            </div>
+                        </div>
+                        <div class="info" id="info-acoes">
+                            <!-- <button class="ver">
+                            
+                            </button> -->
+                        </div>
+                    </div>
+
+                    <div class="registro">
+                        <div class="info" id="info-nome">
+                            <div class="perfil"></div>
+                            <div class="nome">
+                                <h4>Mariana Rosa</h4>
+                                <p>Ciencia Dep</p>
+                            </div>
+                        </div>
+                        <div class="info" id="info-email">
+                            <p>mariana.r@school.edu</p>
+                        </div>
+                        <div class="info" id="info-projetos">
+                            <div class="contagem" id="pessoa1">
+                                <p>3</p>
+                            </div>
+                        </div>
+                        <div class="info" id="info-acoes">
+                            <!-- <button class="ver">
+                                
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
