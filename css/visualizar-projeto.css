@@ -107,10 +107,15 @@ header {
 .cabeca>h2 {
     font-weight: 600;
 }
-
-.perfil {
-    height: 50px;
+.perfil1{
+      height: 50px;
     width: 50px;
+    background-color: rgb(0, 0, 0);
+    border-radius: 50px;
+}
+.perfil {
+    height: 20px;
+    width: 20px;
     background-color: rgb(0, 0, 0);
     border-radius: 50px;
 }
@@ -137,7 +142,7 @@ header {
     font-size: 20px;
 }
 
-input {
+.navg {
     background-color: transparent;
     border: solid 1px grey;
     outline: none;
@@ -164,15 +169,166 @@ main {
 .paragrafo>button {
     padding: 7px 30px;
     border: solid 1px grey;
-    color: black;
+    color: white;
     border-radius: 5px;
-    background-color: white;
+    background-color: rgb(35, 35, 255);
     cursor: pointer;
     font-weight: bold;
 }
 
 .paragrafo>button:hover {
     transition: 0.5s;
-    color: black;
-    background-color: orange;
+    color: white;
+background-color: midnightblue;
 }
+
+#navegado {
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding-left: 20px;
+    width: 500px;
+    margin-right: 200px;
+}
+
+.navegar {
+    gap: 20px;
+    display: flex;
+    border-radius: 10px;
+    padding: 20px;
+    border: 2px solid grey;
+    background-color: white;
+    width: 100%;
+}
+
+select {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.box-main {
+    padding: 10px;
+    background-color: white;
+    border: 2px solid grey;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.abas {
+    border-bottom: solid 2px grey;
+    padding: 10px;
+    justify-content: center;
+    gap: 150px;
+    display: flex;
+}
+
+.lista {
+    width: 100%;
+    /* background-color: black; */
+}
+
+.registro {
+    padding: 15px;
+    /* background-color: blue; */
+    display: flex;
+    border-bottom: solid 1px rgb(182, 182, 182);
+    width: 100%;
+    height: 80px;
+}
+
+.info {
+
+    height: 100%;
+    width: calc(100% / 4);
+}
+
+.professores {
+    gap: 5px;
+    margin-top: 10px;
+    margin-left: 120px;
+    display: flex;
+}
+
+.status {
+    margin-left: 100px;
+    border-radius: 10px;
+    display: flex;
+    margin-top: 13px;
+    justify-content: center;
+    padding: 10px;
+    font-size: 15px;
+    align-items: center;
+     height: 20px;
+    color: blue;
+    background-color: lightblue;
+}
+#categoria{
+    margin-top: 12px;
+}
+
+.pontuacao {
+    color: blue;
+    font-size: 19px;
+    margin-top: 10px;
+    margin-left: 140px;
+}
+#professora{
+    margin-left: 137px;
+}
+#pontuacao {
+    margin-left: 145px;
+}
+
+#status2 {
+     height: 10px;
+    margin-left: 120px;
+    background-color: rgb(178, 221, 178);
+    color: green;
+}
+#pontuacao{
+    margin-left: 145px;
+
+}
+#pontuaca1o{
+    margin-left: 149px;
+}
+.button-nav > p{
+    color: grey ;
+}
+#status3 {
+    height: 10px;
+    margin-left: 115px;
+    color: rgba(34, 33, 33, 0.973);
+    background-color: rgba(128, 128, 128, 0.466);
+}
+#prof{
+    margin-left: 99px;
+}
+.button-nav{
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.alterar{
+    gap: 10px;
+    display: flex;
+}
+.opcao{
+    display: flex;
+    font-size: 15px;
+    padding: 5px;
+    cursor: pointer;
+}
+.opcao:focus{
+    padding: 10px;
+    color: white;
+    background-color:   blue;
+}
+.alterar > button{
+    border: none;
+    border-radius: 5px;
+}
+span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}   

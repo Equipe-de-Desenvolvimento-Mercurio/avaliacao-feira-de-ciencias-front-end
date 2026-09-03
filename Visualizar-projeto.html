@@ -4,16 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="pagina-projeto2.css">
+    <link rel="stylesheet" href="css/visualizar-projeto.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
-    <link rel="shortcut icon" href="img/logo-merc.jpg" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/images/favicon-mercurio.png " type="image/x-icon">
     <title>Manege Projeto SIC</title>
 </head>
 
 <body>
     <div class="navegador">
         <div class="logo">
-            <img src="img/logo-merc.jpg" alt="Logo Mercúrio">
+            <img src="assets/images/Logo-mercurio.jpg" alt="Logo Mercúrio">
             <div class="texto-logo">
                 <h3>Colégio Mercúrio</h3>
                 <p>Plataforma Sic</p>
@@ -24,8 +24,6 @@
             <button class="btn"><i class="fi fi-bs-flask"></i>Projetos</button>
             <button class="btn"> <i class="fi fi-sr-user"></i>Professores</button>
             <button class="btn"> <i class="fi fi-sr-chart-simple"></i>Rank</button>
-            <a href="http://127.0.0.1:5500/pagina-principal/Pagina-principal.html"><button class="btn"> <i
-                        class="fi fi-sr-chart-simple"></i>voltar</button></a>
         </div>
     </div>
     <div class="pagina-principal">
@@ -34,15 +32,15 @@
                 <h2>SIC Manegement</h2>
             </div>
             <div class="icon">
-                <input placeholder="Buscar..." type="text">
+                <input class="navg" placeholder="Buscar..." type="text">
                 <i class="fi fi-rs-bell"></i>
                 <i class="fi fi-rr-settings"></i>
-                <div class="perfil">
+                <div class="perfil1 ">
                 </div>
             </div>
         </header>
         <main>
-            
+
             <div class="titulo">
                 <h1>Professores</h1>
                 <div class="paragrafo">
@@ -51,10 +49,114 @@
                 </div>
             </div>
 
+            <div class="navegar">
+                <input placeholder="Digite o Nome do Projeto" type="" id="navegado">
+
+                <select>
+                    <option value="#">Todas As Categoria</option>
+                </select>
+                <select>
+                    <option value="#">Todos Os Professores</option>
+                </select>
+                <select>
+                    <option value="#">Todos Os Status</option>
+                </select>
+            </div>
+
+            <div class="box-main">
+                <div class="abas">
+                    <p>Nomes de projetos</p>
+                    <p>Categoria</p>
+                    <p>professores</p>
+                    <p>Status</p>
+                    <p>pontuação</p>
+                    <p>Ações</p>
+                </div>
+                <div class="lista">
+                    <div class="registro">
+                        <div class="info inf" id="info-nome">
+                            <div class="nome">
+                                <h4>Água Sustentável</h4>
+                                <p>ID: PRJ-2023-041</p>
+                            </div>
+                        </div>
+                        <div class="categoria inf">
+                            Ambiental <br> Ciência
+                        </div>
+                        <div class="professores inf">
+                            <div class="perfil"></div>
+                            <p>Ana Paula  Russo</p>
+                        </div>
+                        <div id="status1" class="status inf">
+                            <p>Julgada</p>
+                        </div>
+                        <div class="pontuacao inf">
+                            <p>92.5</p>
+                        </div>
+                    </div>
+                </div>
 
 
-                <div class="navegar">
-                    input
+
+                <div class="lista">
+                    <div class="registro">
+                        <div class="info inf" id="info-nome">
+                            <div class="nome">
+                                <h4>Vulcão</h4>
+                                <p>ID: PRJ-2023-102</p>
+                            </div>
+                        </div>
+                        <div id="categoria" class="categoria inf">
+                            Quimica
+                        </div>
+                        <div id="professora" class="professores inf">
+                            <div class="perfil"></div>
+                            <p>Renata Alves</p>
+                        </div>
+                        <div id="status2" class="status inf">
+                            <p>Aprovado</p>
+                        </div>
+                        <div id="pontuacao" class="pontuacao inf">
+                            <p>-</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="lista">
+                    <div class="registro">
+                        <div class="info inf" id="info-nome">
+                            <div class="nome inf">
+                                <h4>previsão de doenças</h4>
+                                <p>ID: PRJ-2023-088</p>
+                            </div>
+                        </div>
+                        <div class="categoria inf">
+                            Ciência da <br> Computação
+                        </div>
+                        <div id="prof" class="professores inf">
+                            <div class="perfil"></div>
+                            <p>Paulo roberto </p>
+                        </div>
+                        <div id="status3" class="status inf">
+                            <p>Pendente</p>
+                        </div>
+                        <div id="pontuaca1o" class="pontuacao inf">
+                            <p>-</p>
+                        </div>
+                    </div>
+                    <div class="button-nav">
+                        <p>Exibindo 1 a 10 de 45 entradas</p>
+                        <div class="alterar">
+                            <span><</span>
+                            <button class="opcao">1</button>
+                            <button class="opcao">2</button>
+                            <button class="opcao">3</button>
+                            <button class="opcao">...</button>
+                            <button class="opcao">5</button>
+                    <span>></span>                            
+                        </div>
+                    </div>
                 </div>
         </main>
 </body>
