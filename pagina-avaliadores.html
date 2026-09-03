@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="css/pagina-avaliadores.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css"/>
+    <link
+      rel="shortcut icon"
+      href="assets/images/favicon-mercurio.png"
+      type="image/x-icon"/>
+
+    <title>Pagina-Professor</title>
+  </head>
+
+  <body>
+    <div class="navegador">
+      <div class="logo">
+        <img src="assets/images/Logo-mercurio.jpg" alt="Logo Mercúrio"/>
+
+        <div class="texto-logo">
+          <h3>Colégio Mercúrio</h3>
+          <p>Plataforma Sic</p>
+        </div>
+      </div>
+
+      <div id="navegador">
+        <button class="btn">
+          <i class="fi fi-sr-square-poll-vertical"></i>
+          Dashboard
+        </button>
+
+        <button class="btn">
+          <i class="fi fi-bs-flask"></i>
+          Projetos
+        </button>
+
+        <button class="btn">
+          <i class="fi fi-sr-user"></i>
+          Professores
+        </button>
+
+        <button class="btn">
+          <i class="fi fi-sr-chart-simple"></i>
+          Rank
+        </button>
+
+        <button class="btn">
+          <i class="fi fi-sr-square-poll-vertical"></i>
+          Avaliadores
+        </button>
+
+        <a href="http://127.0.0.1:5500/pagina-principal/Pagina-principal.html">
+          <button class="btn">
+            <i class="fi fi-sr-chart-simple"></i>
+            Voltar
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <div class="pagina-principal">
+      <header>
+        <div class="cabeca">
+          <h2>SIC Management</h2>
+        </div>
+
+        <div class="icon">
+          <input placeholder="Buscar..." type="text" />
+          <i class="fi fi-rs-bell"></i>
+          <i class="fi fi-rr-settings"></i>
+          <div class="perfil"></div>
+        </div>
+      </header>
+
+      <main>
+        <div class="titulo">
+          <h1>Avaliadores</h1>
+
+          <div class="paragrafo">
+            <p>
+              Gerencie os membros do painel de avaliação e suas atribuições.
+            </p>
+
+            <button id="btn-prof">+ Novo professor</button>
+          </div>
+        </div>
+
+        <div class="box-main">
+          <div class="buscar-principal">
+            <input type="text" class="search-input" placeholder="Buscar..." />
+          </div>
+
+
+          <div class="top">
+            <p>Nome</p>
+            <p>Email</p>
+            <p>Avaliações completas</p>
+            <p>Status</p>
+            <p>Ações</p>
+          </div>
+   
+          <div class="lista">
+
+            <div class="registro">
+              <div class="info-nome">
+                <div class="perfil">AS</div>
+
+                <div class="nome">
+                  <h4>Ana Silva</h4>
+
+                  <p>Biologia Dept</p>
+                </div>
+              </div>
+
+              <div class="info-email">
+                <p>ana.silva@school.edu</p>
+              </div>
+
+              <div class="info-projetos">
+                <div class="barra">
+                  <div class="progresso" style="width: 75%"></div>
+                </div>
+
+                <span>24/28</span>
+              </div>
+
+              <div class="info-status">
+                <div class="status ativo">
+                  <span></span>
+
+                  Ativo
+                </div>
+              </div>
+
+              <div class="info-acoes">
+                <button>
+                  <i class="fi fi-rr-eye"></i>
+                </button>
+
+                <button>
+                  <i class="fi fi-rr-pencil"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="registro">
+              <div class="info-nome">
+                <div class="perfil">CH</div>
+
+                <div class="nome">
+                  <h4>Carlos Henrique</h4>
+
+                  <p>Geografia Dept</p>
+                </div>
+              </div>
+
+              <div class="info-email">
+                <p>carlos.o@school.edu</p>
+              </div>
+
+              <div class="info-projetos">
+                <div class="barra">
+                  <div class="progresso" style="width: 50%"></div>
+                </div>
+
+                <span>14/28</span>
+              </div>
+
+              <div class="info-status">
+                <div class="status ativo">
+                  <span></span>
+
+                  Ativo
+                </div>
+              </div>
+
+              <div class="info-acoes">
+                <button>
+                  <i class="fi fi-rr-eye"></i>
+                </button>
+
+                <button>
+                  <i class="fi fi-rr-pencil"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="registro">
+              <div class="info-nome">
+                <div class="perfil">MR</div>
+
+                <div class="nome">
+                  <h4>Mariana Rosa</h4>
+
+                  <p>Ciencia Dept</p>
+                </div>
+              </div>
+
+              <div class="info-email">
+                <p>mariana.r@school.edu</p>
+              </div>
+
+              <div class="info-projetos">
+                <div class="barra">
+                  <div class="progresso" style="width: 100%"></div>
+                </div>
+
+                <span>28/28</span>
+              </div>
+
+              <div class="info-status">
+                <div class="status inativo">
+                  <span></span>
+
+                  Inativo
+                </div>
+              </div>
+
+              <div class="info-acoes">
+                <button>
+                  <i class="fi fi-rr-eye"></i>
+                </button>
+
+                <button>
+                  <i class="fi fi-rr-pencil"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
