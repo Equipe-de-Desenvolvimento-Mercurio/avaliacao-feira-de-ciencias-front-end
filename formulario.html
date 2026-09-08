@@ -5,6 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="css/formulario.css"/>
+    <link rel="stylesheet" href="css/global.css"/>
 
     <link
       rel="stylesheet"
@@ -15,6 +16,10 @@
       href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css"/>
 
     <title>Formulário</title>
+    <script src="js/config.js" defer></script>
+    <script src="js/services/service.js" defer></script>
+    <script src="js/utils/util.js" defer></script>
+    <script src="js/main.js" defer></script>
   </head>
 
   <body>
@@ -28,7 +33,7 @@
       <hr class="hr"/>
     </header>
 
-    <main>
+    <main data-project-id="042">
       <div class="texto-inicial">
         <h3 class="h2-inicial">AVALIANDO PROJETO #042</h3>
 
@@ -50,40 +55,17 @@
         <p>O projeto apresenta uma abordagem inovadora para o problema?</p>
 
         <div class="botoes">
-          <input
-            type="radio"
-            id="criatividade1"
-            name="criatividade"
-            value="1"/>
-          <label for="criatividade1">1</label>
-
-          <input
-            type="radio"
-            id="criatividade2"
-            name="criatividade"
-            value="2"/>
-          <label for="criatividade2">2</label>
-
-          <input
-            type="radio"
-            id="criatividade3"
-            name="criatividade"
-            value="3"/>
-          <label for="criatividade3">3</label>
-
-          <input
-            type="radio"
-            id="criatividade4"
-            name="criatividade"
-            value="4"/>
-          <label for="criatividade4">4</label>
-
-          <input
-            type="radio"
-            id="criatividade5"
-            name="criatividade"
-            value="5"/>
-          <label for="criatividade5">5</label>
+          <input type="radio" id="criatividade-5" name="criatividade" value="5"/><label for="criatividade-5">5</label>
+          <input type="radio" id="criatividade-55" name="criatividade" value="5.5"/><label for="criatividade-55">5,5</label>
+          <input type="radio" id="criatividade-6" name="criatividade" value="6"/><label for="criatividade-6">6</label>
+          <input type="radio" id="criatividade-65" name="criatividade" value="6.5"/><label for="criatividade-65">6,5</label>
+          <input type="radio" id="criatividade-7" name="criatividade" value="7"/><label for="criatividade-7">7</label>
+          <input type="radio" id="criatividade-75" name="criatividade" value="7.5"/><label for="criatividade-75">7,5</label>
+          <input type="radio" id="criatividade-8" name="criatividade" value="8"/><label for="criatividade-8">8</label>
+          <input type="radio" id="criatividade-85" name="criatividade" value="8.5"/><label for="criatividade-85">8,5</label>
+          <input type="radio" id="criatividade-9" name="criatividade" value="9"/><label for="criatividade-9">9</label>
+          <input type="radio" id="criatividade-95" name="criatividade" value="9.5"/><label for="criatividade-95">9,5</label>
+          <input type="radio" id="criatividade-10" name="criatividade" value="10"/><label for="criatividade-10">10</label>
         </div>
       </div>
       <div class="caixa">
@@ -92,20 +74,17 @@
         <p>O método científico foi aplicado de forma rigorosa e clara?</p>
 
         <div class="botoes2">
-          <input type="radio" id="metodologia1" name="metodologia" value="1" />
-          <label for="metodologia1">1</label>
-
-          <input type="radio" id="metodologia2" name="metodologia" value="2" />
-          <label for="metodologia2">2</label>
-
-          <input type="radio" id="metodologia3" name="metodologia" value="3" />
-          <label for="metodologia3">3</label>
-
-          <input type="radio" id="metodologia4" name="metodologia" value="4" />
-          <label for="metodologia4">4</label>
-
-          <input type="radio" id="metodologia5" name="metodologia" value="5" />
-          <label for="metodologia5">5</label>
+          <input type="radio" id="metodologia-5" name="metodologia" value="5"/><label for="metodologia-5">5</label>
+          <input type="radio" id="metodologia-55" name="metodologia" value="5.5"/><label for="metodologia-55">5,5</label>
+          <input type="radio" id="metodologia-6" name="metodologia" value="6"/><label for="metodologia-6">6</label>
+          <input type="radio" id="metodologia-65" name="metodologia" value="6.5"/><label for="metodologia-65">6,5</label>
+          <input type="radio" id="metodologia-7" name="metodologia" value="7"/><label for="metodologia-7">7</label>
+          <input type="radio" id="metodologia-75" name="metodologia" value="7.5"/><label for="metodologia-75">7,5</label>
+          <input type="radio" id="metodologia-8" name="metodologia" value="8"/><label for="metodologia-8">8</label>
+          <input type="radio" id="metodologia-85" name="metodologia" value="8.5"/><label for="metodologia-85">8,5</label>
+          <input type="radio" id="metodologia-9" name="metodologia" value="9"/><label for="metodologia-9">9</label>
+          <input type="radio" id="metodologia-95" name="metodologia" value="9.5"/><label for="metodologia-95">9,5</label>
+          <input type="radio" id="metodologia-10" name="metodologia" value="10"/><label for="metodologia-10">10</label>
         </div>
       </div>
 
@@ -115,20 +94,17 @@
         <p>Qual o impacto social ou científico da solução proposta?</p>
 
         <div class="botoes3">
-          <input type="radio" id="relevancia1" name="relevancia" value="1"/>
-          <label for="relevancia1">1</label>
-
-          <input type="radio" id="relevancia2" name="relevancia" value="2"/>
-          <label for="relevancia2">2</label>
-
-          <input type="radio" id="relevancia3" name="relevancia" value="3" />
-          <label for="relevancia3">3</label>
-
-          <input type="radio" id="relevancia4" name="relevancia" value="4"/>
-          <label for="relevancia4">4</label>
-
-          <input type="radio" id="relevancia5" name="relevancia" value="5"/>
-          <label for="relevancia5">5</label>
+          <input type="radio" id="relevancia-5" name="relevancia" value="5"/><label for="relevancia-5">5</label>
+          <input type="radio" id="relevancia-55" name="relevancia" value="5.5"/><label for="relevancia-55">5,5</label>
+          <input type="radio" id="relevancia-6" name="relevancia" value="6"/><label for="relevancia-6">6</label>
+          <input type="radio" id="relevancia-65" name="relevancia" value="6.5"/><label for="relevancia-65">6,5</label>
+          <input type="radio" id="relevancia-7" name="relevancia" value="7"/><label for="relevancia-7">7</label>
+          <input type="radio" id="relevancia-75" name="relevancia" value="7.5"/><label for="relevancia-75">7,5</label>
+          <input type="radio" id="relevancia-8" name="relevancia" value="8"/><label for="relevancia-8">8</label>
+          <input type="radio" id="relevancia-85" name="relevancia" value="8.5"/><label for="relevancia-85">8,5</label>
+          <input type="radio" id="relevancia-9" name="relevancia" value="9"/><label for="relevancia-9">9</label>
+          <input type="radio" id="relevancia-95" name="relevancia" value="9.5"/><label for="relevancia-95">9,5</label>
+          <input type="radio" id="relevancia-10" name="relevancia" value="10"/><label for="relevancia-10">10</label>
         </div>
       </div>
 
@@ -138,43 +114,59 @@
         <p>Os alunos demonstraram domínio sobre o tema exposto?</p>
 
         <div class="botoes">
-          <input
-            type="radio"
-            id="apresentacao1"
-            name="apresentacao"
-            value="1"
-          />
-          <label for="apresentacao1">1</label>
-          <input
-            type="radio"
-            id="apresentacao2"
-            name="apresentacao"
-            value="2"/>
-          <label for="apresentacao2">2</label>
-          <input
-            type="radio"
-            id="apresentacao3"
-            name="apresentacao"
-            value="3"
-          />
-          <label for="apresentacao3">3</label>
-          <input
-            type="radio"
-            id="apresentacao4"
-            name="apresentacao"
-            value="4"
-          />
-          <label for="apresentacao4">4</label>
+          <input type="radio" id="apresentacao-5" name="apresentacao" value="5"/><label for="apresentacao-5">5</label>
+          <input type="radio" id="apresentacao-55" name="apresentacao" value="5.5"/><label for="apresentacao-55">5,5</label>
+          <input type="radio" id="apresentacao-6" name="apresentacao" value="6"/><label for="apresentacao-6">6</label>
+          <input type="radio" id="apresentacao-65" name="apresentacao" value="6.5"/><label for="apresentacao-65">6,5</label>
+          <input type="radio" id="apresentacao-7" name="apresentacao" value="7"/><label for="apresentacao-7">7</label>
+          <input type="radio" id="apresentacao-75" name="apresentacao" value="7.5"/><label for="apresentacao-75">7,5</label>
+          <input type="radio" id="apresentacao-8" name="apresentacao" value="8"/><label for="apresentacao-8">8</label>
+          <input type="radio" id="apresentacao-85" name="apresentacao" value="8.5"/><label for="apresentacao-85">8,5</label>
+          <input type="radio" id="apresentacao-9" name="apresentacao" value="9"/><label for="apresentacao-9">9</label>
+          <input type="radio" id="apresentacao-95" name="apresentacao" value="9.5"/><label for="apresentacao-95">9,5</label>
+          <input type="radio" id="apresentacao-10" name="apresentacao" value="10"/><label for="apresentacao-10">10</label>
+        </div>
+        </div>
 
-          <input
-            type="radio"
-            id="apresentacao5"
-            name="apresentacao"
-            value="5"
-          />
-          <label for="apresentacao5">5</label>
+      <div class="caixa">
+        <h2>Critério 5</h2>
+
+        <p>A solução demonstra qualidade e aplicação adequada?</p>
+
+        <div class="botoes">
+          <input type="radio" id="nota5-5" name="nota5" value="5"/><label for="nota5-5">5</label>
+          <input type="radio" id="nota5-55" name="nota5" value="5.5"/><label for="nota5-55">5,5</label>
+          <input type="radio" id="nota5-6" name="nota5" value="6"/><label for="nota5-6">6</label>
+          <input type="radio" id="nota5-65" name="nota5" value="6.5"/><label for="nota5-65">6,5</label>
+          <input type="radio" id="nota5-7" name="nota5" value="7"/><label for="nota5-7">7</label>
+          <input type="radio" id="nota5-75" name="nota5" value="7.5"/><label for="nota5-75">7,5</label>
+          <input type="radio" id="nota5-8" name="nota5" value="8"/><label for="nota5-8">8</label>
+          <input type="radio" id="nota5-85" name="nota5" value="8.5"/><label for="nota5-85">8,5</label>
+          <input type="radio" id="nota5-9" name="nota5" value="9"/><label for="nota5-9">9</label>
+          <input type="radio" id="nota5-95" name="nota5" value="9.5"/><label for="nota5-95">9,5</label>
+          <input type="radio" id="nota5-10" name="nota5" value="10"/><label for="nota5-10">10</label>
         </div>
+      </div>
+
+      <div class="caixa">
+        <h2>Critério 6</h2>
+
+        <p>O projeto apresenta potencial de contribuição para a comunidade?</p>
+
+        <div class="botoes">
+          <input type="radio" id="nota6-5" name="nota6" value="5"/><label for="nota6-5">5</label>
+          <input type="radio" id="nota6-55" name="nota6" value="5.5"/><label for="nota6-55">5,5</label>
+          <input type="radio" id="nota6-6" name="nota6" value="6"/><label for="nota6-6">6</label>
+          <input type="radio" id="nota6-65" name="nota6" value="6.5"/><label for="nota6-65">6,5</label>
+          <input type="radio" id="nota6-7" name="nota6" value="7"/><label for="nota6-7">7</label>
+          <input type="radio" id="nota6-75" name="nota6" value="7.5"/><label for="nota6-75">7,5</label>
+          <input type="radio" id="nota6-8" name="nota6" value="8"/><label for="nota6-8">8</label>
+          <input type="radio" id="nota6-85" name="nota6" value="8.5"/><label for="nota6-85">8,5</label>
+          <input type="radio" id="nota6-9" name="nota6" value="9"/><label for="nota6-9">9</label>
+          <input type="radio" id="nota6-95" name="nota6" value="9.5"/><label for="nota6-95">9,5</label>
+          <input type="radio" id="nota6-10" name="nota6" value="10"/><label for="nota6-10">10</label>
         </div>
+      </div>
 
   <div class="caixa-5">
   <h2>Destaque</h2>

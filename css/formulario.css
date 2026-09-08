@@ -321,6 +321,35 @@ footer{
 
 }
 
+/* Escala de 5 a 10 com intervalos de 0,5. */
+.botoes,
+.botoes2,
+.botoes3,
+.botoes4 {
+    display: grid;
+    grid-template-columns: repeat(11, minmax(42px, 1fr));
+    gap: 8px;
+    justify-content: initial;
+}
+
+.botoes label,
+.botoes2 label,
+.botoes3 label,
+.botoes4 label {
+    min-height: 44px;
+    padding: 8px 4px;
+    font-size: 14px;
+}
+
+@media (max-width: 760px) {
+    .botoes,
+    .botoes2,
+    .botoes3,
+    .botoes4 {
+        grid-template-columns: repeat(6, minmax(42px, 1fr));
+    }
+}
+
 
 
 

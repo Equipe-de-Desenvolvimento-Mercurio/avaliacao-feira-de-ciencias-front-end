@@ -1,0 +1,124 @@
+:root {
+    --sic-ink: #17212b;
+    --sic-muted: #6b7785;
+    --sic-line: #e5e9ee;
+    --sic-surface: #ffffff;
+    --sic-background: #f6f8fa;
+    --sic-accent: #cc4c04;
+    --sic-accent-soft: #fff1e9;
+}
+
+.navegador {
+    width: 248px !important;
+    min-width: 248px;
+    min-height: 100vh;
+    height: auto !important;
+    padding: 18px 14px;
+    background: var(--sic-surface);
+    border-right: 1px solid var(--sic-line);
+}
+
+.logo {
+    padding: 4px 8px 24px !important;
+    border-bottom: 1px solid var(--sic-line);
+}
+
+.logo > img {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 10px !important;
+}
+
+.texto-logo > h3,
+.texto-logo p {
+    font-family: inherit !important;
+}
+
+#navegador {
+    gap: 4px;
+    margin: 22px 0 !important;
+}
+
+#navegador > .btn,
+#navegador > a > .btn {
+    width: 100%;
+    min-height: 44px;
+    margin: 0 !important;
+    padding: 11px 14px !important;
+    gap: 12px !important;
+    border-radius: 8px !important;
+    color: var(--sic-muted) !important;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease;
+}
+
+#navegador > .btn:hover,
+#navegador > a > .btn:hover,
+#navegador > .btn[aria-current="page"],
+#navegador > a > .btn[aria-current="page"] {
+    color: var(--sic-accent) !important;
+    background: var(--sic-accent-soft) !important;
+    animation: none !important;
+}
+
+.pagina-principal {
+    width: auto !important;
+    min-width: 0;
+    flex: 1;
+    min-height: 100vh;
+}
+
+.pagina-principal > header {
+    min-height: 76px;
+    height: auto !important;
+    padding: 16px 28px !important;
+    background: var(--sic-surface);
+    border-bottom: 1px solid var(--sic-line) !important;
+}
+
+.pagina-principal > main {
+    width: 100% !important;
+    min-height: calc(100vh - 76px);
+    height: auto !important;
+    background: var(--sic-background) !important;
+}
+
+.icon {
+    width: auto !important;
+    gap: 18px;
+}
+
+@media (max-width: 760px) {
+    body:has(.navegador) {
+        display: block !important;
+    }
+
+    .navegador {
+        width: 100% !important;
+        min-width: 0;
+        min-height: auto;
+        padding: 10px 14px;
+    }
+
+    .logo {
+        padding-bottom: 12px !important;
+    }
+
+    #navegador {
+        flex-direction: row !important;
+        overflow-x: auto;
+        margin: 12px 0 0 !important;
+    }
+
+    #navegador > .btn,
+    #navegador > a > .btn {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    .pagina-principal > header {
+        padding: 14px 18px !important;
+    }
+}

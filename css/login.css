@@ -333,3 +333,24 @@ width: 100%;
         width: 100%;
     }
 }
+
+.campo-perfil {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.campo-perfil label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.campo-perfil select {
+    width: 100%;
+    border: 1px solid #7a7a79a0;
+    border-radius: 9px;
+    padding: 9px 10px;
+    font-size: 15px;
+    background: #fff;
+    outline: none;
+}
