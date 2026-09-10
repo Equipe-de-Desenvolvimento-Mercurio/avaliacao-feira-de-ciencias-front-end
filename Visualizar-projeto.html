@@ -47,24 +47,24 @@
         <main>
 
             <div class="titulo">
-                <h1>Professores</h1>
+                <h1>Projetos</h1>
                 <div class="paragrafo">
-                    <p>Gerencie membros do corpo docente e suas atribuições de projeto</p>
-                    <button id="btn-prof">+ Novo professor</button>
+                    <p>Gerencie os projetos cadastrados no evento selecionado</p>
+                    <button id="btn-novo-projeto">+ Novo projeto</button>
                 </div>
             </div>
 
             <div class="navegar">
-                <input placeholder="Digite o Nome do Projeto" type="" id="navegado">
+                <input placeholder="Digite o nome, resumo ou estande" type="search" id="navegado">
 
-                <select>
-                    <option value="#">Todas As Categoria</option>
+                <select id="filtro-categoria" aria-label="Filtrar por categoria">
+                    <option value="">Todas as categorias</option>
                 </select>
-                <select>
-                    <option value="#">Todos Os Professores</option>
+                <select id="filtro-professor" aria-label="Filtrar por professor">
+                    <option value="">Todos os professores</option>
                 </select>
-                <select>
-                    <option value="#">Todos Os Status</option>
+                <select id="filtro-status" aria-label="Filtrar por status">
+                    <option value="">Todos os status</option>
                 </select>
             </div>
 
@@ -75,9 +75,8 @@
                     <p>professores</p>
                     <p>Status</p>
                     <p>pontuação</p>
-                    <p>Ações</p>
                 </div>
-                <div class="lista">
+                <div id="lista-projetos-api" class="lista">
                     <div class="registro">
                         <div class="info inf" id="info-nome">
                             <div class="nome">
@@ -100,6 +99,7 @@
                         </div>
                     </div>
                 </div>
+                <p id="projetos-contador" class="projetos-contador"></p>
 
 
 

@@ -1,3 +1,3 @@
 window.SIC_CONFIG = {
-    apiBaseUrl: ""
+    apiBaseUrl: "http://localhost:3000"
 };

@@ -52,32 +52,35 @@
             <div class="titulo">
                 <span>Professor > Monitoramento</span>
                 <h2>Monitoramento Dos Professores</h2>
+                <label for="monitor-professor">Professor</label>
+                <select id="monitor-professor">
+                    <option value="">Carregando professores...</option>
+                </select>
                 <button id="btn-prof">+ Novo professor</button>
             </div>
-            <div class="box-main">
-                <div class="perfil-user">
+            <div class="box-main" id="monitoramento-api">
+                <div class="perfil-user" id="monitor-perfil">
                     <div class="foto"></div>
                     <div class="detalhes">
-                        <h3>Dr Sarah jenkins</h3>
-                        <p>Senior Ciencia educação</p>
+                        <h3 id="monitor-nome">-</h3>
+                        <p id="monitor-tipo">-</p>
                     </div>
                     <div class="materia">
-                        <span>Biologia</span>
-                        <span>Ciências </span>
+                            <span id="monitor-avaliador">-</span>
                     </div>
                     <div class="informacao">
                         <div class="email">
                             <i class="fi fi-sr-envelope"></i>
-                            <span>jenkins@school.edu</span>
+                            <span id="monitor-email">-</span>
                         </div>
                         <div class="telefone">
                             <i class="fi fi-sr-phone-call"></i>
-                            <span>+1 (555) 123-4567</span>
+                            <span>ID: <b id="monitor-id">-</b></span>
 
                         </div>
                         <div class="localizacao">
                             <i class="fi fi-ss-apartment"></i>
-                            <span>Local de Ciências, Sala 302</span>
+                            <span id="monitor-evento">-</span>
                         </div>
 
                     </div>
@@ -88,10 +91,10 @@
                             <i class="fi fi-ts-flask"></i>
                         </div>
                         <div class="tituloss">
-                            <h4>Total de Projeto Meteoro</h4>
+                            <h4>Projetos avaliados</h4>
                             <div class="num">
-                                <h2>12</h2>
-                                <span>+3 anos</span>
+                                <h2 id="monitor-total-projetos">0</h2>
+                                <span>no evento</span>
                             </div>
 
                         </div>
@@ -101,17 +104,16 @@
                             <i class="fi fi-rs-star"></i>
                         </div>
                         <div class="tituloss">
-                            <h4>Total de Projeto Meteoro</h4>
+                            <h4>Pontuação total</h4>
                             <div id="num2" class="num">
-                                <h2>8.4</h2>
-                                <span>/10</span>
+                                <h2 id="monitor-pontuacao">0</h2>
+                                <span>pontos</span>
                             </div>
                         </div>
                     </div>
                     <div class="lista">
                         <div class="top">
-                            <h3>Meteoro Projeto</h3>
-                            <a href="#">Ver Tudo</a>
+                            <h3>Projetos avaliados</h3>
                         </div>
                         <div class="aba">
                             <p>Nome Do Projeto</p>
@@ -119,6 +121,7 @@
                             <p>Status</p>
                             <p>média</p>
                         </div>
+                        <div id="monitor-projetos" class="lista-monitoramento">
                         <div id="lista34" class="lista1">
                             <h5>microplastica</h5>
                             <span>Fsica</span>
@@ -142,6 +145,7 @@
                             <span>Portugues</span>
                             <p>evoluindo</p>
                             <span>7.3</span>
+                        </div>
                         </div>
                     </div>
                 </div>

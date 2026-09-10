@@ -394,6 +394,81 @@ main {
     background-color: #eeeeee;
 }
 
+/* Tabela de avaliadores */
+main {
+    overflow-x: auto;
+}
+
+.box-main {
+    width: min(100%, 1100px);
+    margin: 0 auto;
+    border: 1px solid #e4e7ec;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.buscar-principal {
+    padding: 16px 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.buscar-principal > input {
+    width: min(360px, 100%);
+    border: 1px solid #d8dee8;
+    background: #fff;
+    border-radius: 7px;
+    outline: none;
+}
+
+.buscar-principal > input:focus {
+    border-color: #3478b8;
+    box-shadow: 0 0 0 3px rgba(52, 120, 184, 0.12);
+}
+
+#filtro-tipo-avaliador {
+    min-height: 40px;
+    margin-left: 8px;
+    padding: 0 10px;
+    border: 1px solid #d8dee8;
+    border-radius: 7px;
+    background: #fff;
+    color: #344054;
+}
+
+#filtro-tipo-avaliador:focus {
+    border-color: #3478b8;
+    box-shadow: 0 0 0 3px rgba(52, 120, 184, 0.12);
+    outline: none;
+}
+
+.top,
+.registro {
+    grid-template-columns: 2fr 1.8fr 1.4fr 1fr 100px;
+    gap: 16px;
+}
+
+.top {
+    padding: 13px 20px;
+    background: #f8fafc;
+    border-color: #e4e7ec;
+}
+
+.registro {
+    min-height: 78px;
+    height: auto;
+    padding: 12px 20px;
+    border-color: #edf0f4;
+}
+
+.registro:last-child {
+    border-bottom: 0;
+}
+
+@media (max-width: 850px) {
+    .box-main {
+        min-width: 820px;
+    }
+}
 
 .info-acoes i {
     font-size: 14px;

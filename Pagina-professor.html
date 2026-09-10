@@ -58,13 +58,11 @@
 
             <div class="box-main">
                 <div class="seletores">
-                    <button>Todos Departamento</button>
-                    <select name="Status" id="">
-                        <optgroup>
-                            <option value="m">Status: Ativo</option>
-                        </optgroup>
+                    <input id="busca-professor" type="search" placeholder="Buscar por nome ou e-mail" aria-label="Buscar professor">
+                    <select id="filtro-tipo-professor" aria-label="Filtrar por tipo de avaliador">
+                        <option value="">Todos os tipos</option>
                     </select>
-                    <span>Exibindo 1-5 de 42</span>
+                    <span id="professores-contador">Carregando professores...</span>
                 </div>
                 <div class="top">
                     <P>Nome</P>
@@ -73,7 +71,7 @@
                     <P>Ações</P>
                 </div>
 
-                <div class="lista">
+                <div id="lista-professores-api" class="lista">
                     <div class="registro">
                         <div class="info" id="info-nome">
                             <div class="perfil"></div>

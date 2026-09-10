@@ -100,7 +100,8 @@ header {
 }
 
 .pagina-principal {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     height: 100%;
 }
 
@@ -198,6 +199,12 @@ background-color: midnightblue;
     border: 2px solid grey;
     background-color: white;
     width: 100%;
+}
+
+.projetos-contador {
+    margin: 16px 0 0;
+    color: #697586;
+    font-size: 13px;
 }
 
 select {
@@ -332,3 +339,129 @@ span{
     justify-content: center;
     align-items: center;
 }   
+
+/* Tabela de projetos */
+main {
+    min-height: calc(100vh - 70px);
+    overflow-x: hidden;
+}
+
+.titulo {
+    padding: 32px 0 24px;
+}
+
+.navegar {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+}
+
+#navegado,
+.navegar select {
+    min-height: 38px;
+    margin: 0;
+    border: 1px solid #d8dee8;
+    border-radius: 7px;
+    background: #fff;
+    color: #344054;
+    outline: none;
+}
+
+#navegado {
+    flex: 1 1 280px;
+    width: auto;
+    padding: 0 12px;
+}
+
+.navegar select {
+    flex: 0 1 190px;
+    padding: 0 10px;
+}
+
+#navegado:focus,
+.navegar select:focus {
+    border-color: #3478b8;
+    box-shadow: 0 0 0 3px rgba(52, 120, 184, 0.12);
+}
+
+.box-main {
+    width: 100%;
+    margin-top: 14px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    overflow-x: hidden;
+}
+
+.abas,
+.registro {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) minmax(130px, 1fr) minmax(160px, 1.2fr) 130px 110px;
+    align-items: center;
+    gap: 16px;
+}
+
+.abas {
+    justify-content: initial;
+    padding: 13px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.abas p {
+    color: #667085;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.box-main > .lista {
+    min-width: 0;
+}
+
+.box-main > .lista:not(#lista-projetos-api),
+.box-main .button-nav {
+    display: none;
+}
+
+.registro {
+    height: 72px;
+    padding: 0 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.registro:last-child {
+    border-bottom: 0;
+}
+
+.registro .info,
+.registro .categoria,
+.registro .professores,
+.registro .status,
+.registro .pontuacao {
+    width: auto;
+    margin: 0;
+}
+
+.registro .status {
+    height: auto;
+    justify-self: start;
+    padding: 5px 10px;
+    font-size: 11px;
+}
+
+.projetos-contador {
+    padding: 0 20px 14px;
+}
+
+.registro .nome h4,
+.registro .nome p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -52,14 +52,14 @@
             <div class="box-projeto">
                 <div class="projeto-detalhes">
                     <h2>Detalhes do Projeto</h2>
-                    <form>
-                        <label for="#">Nome do Projeto *</label>
-                        <input type="text" placeholder="e.g., solar  powered water  purificado">
+                    <form id="form-projeto">
+                        <label for="nome-projeto">Nome do Projeto *</label>
+                        <input id="nome-projeto" type="text" placeholder="e.g., solar  powered water  purificado" required>
                         <div>
-                            <label for="#">Descrição *</label>
+                            <label for="resumo-projeto">Resumo do projeto *</label>
                             <textarea
                                 placeholder="Forneça um resumo detalhado dos objetivos e da metodologia do projeto..."
-                                id="w3review" name="w3review" rows="20 "></textarea>
+                                id="resumo-projeto" name="w3review" rows="20 " required></textarea>
                         </div>
                     </form>
                     <div class="aviso">
@@ -69,18 +69,16 @@
                 </div>
                 <div class="classificado">
                     <h2>Classificado</h2>
-                    <form>
-                        <label>Categoria</label>
-                        <select>
-                            <option value="">selecione a categoria</option>
+                    <div id="form-classificacao">
+                        <label for="evento-projeto">Evento *</label>
+                        <select id="evento-projeto" required>
+                            <option value="">Carregando eventos...</option>
                         </select>
                         <div id="op">
-                            <label>Professor responsavel</label>
-                            <select>
-                                <option value="">selecione o professor</option>
-                            </select>
+                            <label for="estande-projeto">Estande *</label>
+                            <input id="estande-projeto" type="text" placeholder="Ex.: 12" required>
                         </div>
-                    </form>
+                    </div>
                     <div class="upload">
                         <i class="fi fi-rr-cloud-download-alt"></i>
                         <p>Enviar imagem de capa (opcional) <br>PNG, JPG até 5 MB</p>
@@ -90,7 +88,7 @@
             </div>
             <div class="buttons">
                 <button id="button-cancelar" class="btn1 ">Cancelar</button>
-                <button id="button-arquivo" class="btn1 "><i class="fi fi-rr-file-invoice"></i>Salvar projeto</button>
+                <button id="button-arquivo" class="btn1 " type="button"><i class="fi fi-rr-file-invoice"></i>Salvar projeto</button>
             </div>
             
         </main>

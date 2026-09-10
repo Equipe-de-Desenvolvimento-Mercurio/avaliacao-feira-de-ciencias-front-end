@@ -32,20 +32,22 @@ window.SIC_CONFIG = {
 };
 ```
 
-Endpoints esperados pela camada atual:
+Endpoints consumidos pela camada atual:
 
 - `POST /auth/login`
-- `GET /auth/me`
-- `GET /projects`
-- `POST /projects`
-- `GET /projects/:id`
-- `POST /evaluations`
-- `GET /evaluations`
-- `GET /professors`
-- `POST /professors`
-- `PUT /professors/:id`
-- `GET /evaluators`
-- `GET /ranking`
+- `POST /auth/cadastrar`
+- `DELETE /auth/usuario/:id`
+- `GET /event/:id_usuario`
+- `GET /event/:id_evento/dashboard`
+- `GET /project/:id_evento`
+- `GET /project/id/:id_projeto`
+- `GET /project/:id_evento/:id_usuario/not_evaluated`
+- `GET /project/:id_evento/:id_usuario/evaluated`
+- `POST /project`
+- `POST /review`
+- `GET /teacher/evento/:id_evento`
+- `GET /teacher/:id_evento/:id_usuario`
+- `GET /criterios/:id_usuario`
 
-O login deve retornar um objeto com `token` e, preferencialmente, `user.role`.
+O login deve retornar `token` e os dados do usuário em `data`, conforme o contrato da API.
 Enquanto `apiBaseUrl` estiver vazio, as telas continuam usando o fluxo demonstrativo local.

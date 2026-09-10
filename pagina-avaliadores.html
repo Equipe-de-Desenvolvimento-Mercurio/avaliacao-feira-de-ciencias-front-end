@@ -97,7 +97,10 @@
 
         <div class="box-main">
           <div class="buscar-principal">
-            <input type="text" class="search-input" placeholder="Buscar..." />
+            <input id="busca-avaliador" type="search" class="search-input" placeholder="Buscar por nome ou e-mail" />
+            <select id="filtro-tipo-avaliador" aria-label="Filtrar por tipo de avaliador">
+              <option value="">Todos os tipos</option>
+            </select>
           </div>
 
 
@@ -109,7 +112,7 @@
             <p>Ações</p>
           </div>
    
-          <div class="lista">
+          <div id="lista-avaliadores-api" class="lista">
 
             <div class="registro">
               <div class="info-nome">

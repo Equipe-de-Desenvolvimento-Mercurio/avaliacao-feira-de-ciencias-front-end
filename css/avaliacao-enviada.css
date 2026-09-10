@@ -80,6 +80,33 @@ h1 {
   line-height: 1.7;
 }
 
+.resultado-avaliacao {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 520px;
+  margin: 0 auto 30px;
+}
+
+.resultado-avaliacao div {
+  padding: 14px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.resultado-avaliacao dt {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.resultado-avaliacao dd {
+  margin: 5px 0 0;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .acoes {
   display: flex;
   justify-content: center;
@@ -114,6 +141,10 @@ h1 {
 }
 
 @media (max-width: 520px) {
+  .resultado-avaliacao {
+    grid-template-columns: 1fr;
+  }
+
   .mensagem {
     padding: 40px 20px;
   }

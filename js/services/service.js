@@ -45,7 +45,7 @@
 				return response.text().then(function (text) {
 					var data = text ? JSON.parse(text) : null;
 					if (!response.ok) {
-						var error = new Error(data && data.message || "Erro ao comunicar com a API");
+						var error = new Error(data && (data.error || data.erro || data.message) || "Erro ao comunicar com a API");
 						error.status = response.status;
 						error.data = data;
 						throw error;
@@ -57,8 +57,16 @@
 
 	function saveSession(session) {
 		if (session && session.token) window.localStorage.setItem(TOKEN_KEY, session.token);
-		if (session && session.user) window.localStorage.setItem(USER_KEY, JSON.stringify(session.user));
+		if (session && (session.user || session.data)) {
+			window.localStorage.setItem(USER_KEY, JSON.stringify(session.user || session.data));
+			window.localStorage.removeItem("sic_current_event");
+			window.localStorage.removeItem("sic_current_project");
+		}
 		return session;
+	}
+
+	function pathId(id) {
+		return encodeURIComponent(String(id));
 	}
 
 	window.SICApi = {
@@ -74,12 +82,13 @@
 			login: function (credentials) {
 				return request("/auth/login", { method: "POST", body: credentials }).then(saveSession);
 			},
-			me: function () {
-				return request("/auth/me");
-			},
+			register: function (user) { return request("/auth/cadastrar", { method: "POST", body: user }); },
+			remove: function (id) { return request("/auth/usuario/" + pathId(id), { method: "DELETE" }); },
 			logout: function () {
 				window.localStorage.removeItem(TOKEN_KEY);
 				window.localStorage.removeItem(USER_KEY);
+				window.localStorage.removeItem("sic_current_event");
+				window.localStorage.removeItem("sic_current_project");
 			},
 			getUser: function () {
 				var stored = window.localStorage.getItem(USER_KEY);
@@ -87,34 +96,27 @@
 			},
 			getToken: getToken
 		},
+		events: {
+			listByUser: function (id) { return request("/event/" + pathId(id)); },
+			create: function (event) { return request("/event", { method: "POST", body: event }); },
+			dashboard: function (id) { return request("/event/" + pathId(id) + "/dashboard"); }
+		},
 		projects: {
-			list: function (filters) {
-				var query = new URLSearchParams(filters || {}).toString();
-				return request("/projects" + (query ? "?" + query : ""));
-			},
-			get: function (id) { return request("/projects/" + encodeURIComponent(id)); },
-			create: function (project) { return request("/projects", { method: "POST", body: project }); }
+			list: function (eventId) { return request("/project/" + pathId(eventId)); },
+			get: function (id) { return request("/project/id/" + pathId(id)); },
+			listEvaluated: function (eventId, userId) { return request("/project/" + pathId(eventId) + "/" + pathId(userId) + "/evaluated"); },
+			listNotEvaluated: function (eventId, userId) { return request("/project/" + pathId(eventId) + "/" + pathId(userId) + "/not_evaluated"); },
+			create: function (project) { return request("/project", { method: "POST", body: project }); }
 		},
 		evaluations: {
-			submit: function (evaluation) { return request("/evaluations", { method: "POST", body: evaluation }); },
-			list: function (filters) {
-				var query = new URLSearchParams(filters || {}).toString();
-				return request("/evaluations" + (query ? "?" + query : ""));
-			}
+			submit: function (evaluation) { return request("/review", { method: "POST", body: evaluation }); }
 		},
 		professors: {
-			list: function () { return request("/professors"); },
-			create: function (professor) { return request("/professors", { method: "POST", body: professor }); },
-			update: function (id, professor) { return request("/professors/" + encodeURIComponent(id), { method: "PUT", body: professor }); }
+			list: function (eventId) { return request("/teacher/evento/" + pathId(eventId)); },
+			panel: function (eventId, userId) { return request("/teacher/" + pathId(eventId) + "/" + pathId(userId)); }
 		},
-		evaluators: {
-			list: function () { return request("/evaluators"); }
-		},
-		ranking: {
-			list: function (filters) {
-				var query = new URLSearchParams(filters || {}).toString();
-				return request("/ranking" + (query ? "?" + query : ""));
-			}
+		criteria: {
+			list: function (userId) { return request("/criterios/" + pathId(userId)); }
 		}
 	};
 }(window));

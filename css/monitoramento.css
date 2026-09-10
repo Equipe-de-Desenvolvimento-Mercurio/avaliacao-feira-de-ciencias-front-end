@@ -156,6 +156,16 @@ main {
     padding: 20px;
 }
 
+#monitor-professor {
+    min-width: 280px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: 1px solid #cfd6df;
+    border-radius: 8px;
+    background: #fff;
+    color: #263238;
+}
+
 #btn-prof {
     display: flex;
     gap: 10px;
@@ -410,4 +420,20 @@ main {
 #lista4 > p {
     position: relative;
     right: 10px;
+}
+
+.lista-monitoramento {
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.lista-monitoramento .lista1 {
+    align-items: center;
+}
+
+.lista-monitoramento .api-empty {
+    padding: 28px 20px;
+    color: #6b7280;
+    text-align: center;
 }

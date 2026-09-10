@@ -61,12 +61,12 @@
                     <div class="oie">
                         <label>Nome completo</label>
 
-                        <input placeholder="Ex.: Dra. Jane Smith" type="text">
+                        <input id="professor-nome" placeholder="Ex.: Dra. Jane Smith" type="text" required>
                     </div>
                     <div class="oiu">
                         <label>Email completo</label>
 
-                        <input placeholder="jane.smith@institution.edu" type="email" name="" id="">
+                        <input id="professor-email" placeholder="jane.smith@institution.edu" type="email" required>
                     </div>
                 </div>
 
@@ -81,16 +81,22 @@
 
                 <div class="eae">
                     <div class="eae-boy">
-                        <label>Departamento</label>
-                        <select>
-                            <option value="#">Selecione o Departamento</option>
+                        <label for="professor-tipo">Tipo de avaliador *</label>
+                        <select id="professor-tipo" required>
+                            <option value="">Selecione o tipo de avaliador</option>
+                            <option value="tecnico">Técnico</option>
+                            <option value="artistico">Artístico</option>
                         </select>
                     </div>
                     <div class="eae-girl">
-                        <label>Numero de contato</label>
-                        <input type="number" name="numero">
+                        <label for="professor-senha">Senha inicial *</label>
+                        <input id="professor-senha" type="password" placeholder="Senha inicial" required>
                     </div>
                 </div>
+            </div>
+
+            <div class="buttons">
+                <button id="registrar-professor" class="btn" type="button">Registrar professor</button>
             </div>
 
         </main>

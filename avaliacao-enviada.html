@@ -17,11 +17,31 @@
         <p class="etiqueta">SIC 2026</p>
         <h1 id="titulo-confirmacao">Avaliação enviada</h1>
         <p class="descricao">Sua avaliação foi registrada com sucesso. Obrigado por contribuir com a feira de ciências.</p>
+        <dl class="resultado-avaliacao" id="resultado-avaliacao" hidden>
+          <div><dt>Soma das notas</dt><dd id="soma-notas">-</dd></div>
+          <div><dt>Peso aplicado</dt><dd id="peso-avaliacao">-</dd></div>
+          <div><dt>Pontuação total</dt><dd id="pontuacao-total">-</dd></div>
+        </dl>
         <div class="acoes">
           <a class="botao principal" href="projetos-avaliar.html">Avaliar outro projeto</a>
           <a class="botao secundario" href="home.html">Voltar para Home</a>
         </div>
       </section>
     </main>
+    <script>
+      (function () {
+        var raw = window.sessionStorage.getItem("sic_last_review");
+        if (!raw) return;
+        try {
+          var result = JSON.parse(raw);
+          document.getElementById("soma-notas").textContent = result.soma_notas || "-";
+          document.getElementById("peso-avaliacao").textContent = result.peso || "-";
+          document.getElementById("pontuacao-total").textContent = result.pontuacao_total || "-";
+          document.getElementById("resultado-avaliacao").hidden = false;
+        } catch (error) {
+          window.sessionStorage.removeItem("sic_last_review");
+        }
+      }());
+    </script>
   </body>
 </html>

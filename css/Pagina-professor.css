@@ -363,3 +363,90 @@ span {
 i {
     cursor: pointer;
 }
+
+/* Tabela administrativa responsiva */
+main {
+    min-height: calc(100vh - 70px);
+    overflow-x: auto;
+}
+
+.box-main {
+    width: min(100%, 1080px);
+    margin: 0 auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.seletores {
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+#busca-professor,
+.seletores select {
+    min-height: 36px;
+    border: 1px solid #d8dee8;
+    border-radius: 7px;
+    background: #fff;
+    color: #344054;
+    outline: none;
+}
+
+#busca-professor {
+    width: min(320px, 100%);
+    padding: 0 12px;
+}
+
+#busca-professor:focus,
+.seletores select:focus {
+    border-color: #3478b8;
+    box-shadow: 0 0 0 3px rgba(52, 120, 184, 0.12);
+}
+
+.seletores > span {
+    width: auto;
+    margin-left: auto;
+    color: #667085;
+    font-size: 12px;
+}
+
+.top,
+.registro {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) minmax(220px, 1.5fr) 120px 100px;
+    align-items: center;
+    gap: 12px;
+}
+
+.top {
+    padding: 12px 20px;
+    border: 0;
+    background: #f8fafc;
+}
+
+.top > p,
+.info {
+    width: auto;
+}
+
+.registro {
+    height: 72px;
+    padding: 0 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+.registro:last-child {
+    border-bottom: 0;
+}
+
+@media (max-width: 760px) {
+    .box-main {
+        min-width: 720px;
+    }
+
+    main {
+        padding: 16px;
+    }
+}
