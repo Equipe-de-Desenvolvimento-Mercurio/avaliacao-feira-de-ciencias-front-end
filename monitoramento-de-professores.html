@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/monitoramento.css  ">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
+    <link rel="shortcut icon" href="assets/images/favicon-mercurio.png" type="image/x-icon">
+    <title>Pagina-Professor</title>
+    <script src="js/config.js" defer></script>
+    <script src="js/services/service.js" defer></script>
+    <script src="js/utils/util.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <title>Monitoramento</title>
+</head>
+
+<body>
+    <div class="navegador">
+        <div class="logo">
+            <img src="assets/images/Logo-mercurio.jpg" alt="Logo Mercúrio">
+            <div class="texto-logo">
+                <h3>Colégio Mercúrio</h3>
+                <p>Plataforma Sic</p>
+            </div>
+        </div>
+        <div id="navegador">
+            <button class="btn"><i class="fi fi-sr-square-poll-vertical"></i>DashBoard</button>
+            <button class="btn"><i class="fi fi-bs-flask"></i>Projetos</button>
+            <button class="btn"> <i class="fi fi-sr-user"></i>Professores</button>
+            <button class="btn"> <i class="fi fi-sr-chart-simple"></i>Rank</button>
+            <a href="Pagina-principal.html"><button class="btn"> <i
+                        class="fi fi-sr-chart-simple"></i>voltar</button></a>
+        </div>
+    </div>
+    <div class="pagina-principal">
+        <header>
+            <div class="cabeca">
+                <h2>SIC Manegement</h2>
+            </div>
+            <div class="icon">
+                <input placeholder="Buscar..." type="text">
+                <i class="fi fi-rs-bell"></i>
+                <i class="fi fi-rr-settings"></i>
+                <div class="perfil">
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="titulo">
+                <span>Professor > Monitoramento</span>
+                <h2>Monitoramento Dos Professores</h2>
+                <button id="btn-prof">+ Novo professor</button>
+            </div>
+            <div class="box-main">
+                <div class="perfil-user">
+                    <div class="foto"></div>
+                    <div class="detalhes">
+                        <h3>Dr Sarah jenkins</h3>
+                        <p>Senior Ciencia educação</p>
+                    </div>
+                    <div class="materia">
+                        <span>Biologia</span>
+                        <span>Ciências </span>
+                    </div>
+                    <div class="informacao">
+                        <div class="email">
+                            <i class="fi fi-sr-envelope"></i>
+                            <span>jenkins@school.edu</span>
+                        </div>
+                        <div class="telefone">
+                            <i class="fi fi-sr-phone-call"></i>
+                            <span>+1 (555) 123-4567</span>
+
+                        </div>
+                        <div class="localizacao">
+                            <i class="fi fi-ss-apartment"></i>
+                            <span>Local de Ciências, Sala 302</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="card">
+                        <div class="icone">
+                            <i class="fi fi-ts-flask"></i>
+                        </div>
+                        <div class="tituloss">
+                            <h4>Total de Projeto Meteoro</h4>
+                            <div class="num">
+                                <h2>12</h2>
+                                <span>+3 anos</span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="card-unico" class="card">
+                        <div id="icon2" class="icon">
+                            <i class="fi fi-rs-star"></i>
+                        </div>
+                        <div class="tituloss">
+                            <h4>Total de Projeto Meteoro</h4>
+                            <div id="num2" class="num">
+                                <h2>8.4</h2>
+                                <span>/10</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lista">
+                        <div class="top">
+                            <h3>Meteoro Projeto</h3>
+                            <a href="#">Ver Tudo</a>
+                        </div>
+                        <div class="aba">
+                            <p>Nome Do Projeto</p>
+                            <p>Categoria</p>
+                            <p>Status</p>
+                            <p>média</p>
+                        </div>
+                        <div id="lista34" class="lista1">
+                            <h5>microplastica</h5>
+                            <span>Fsica</span>
+                            <p>Evoluindo</p>
+                            <span>9.2</span>
+                        </div>
+                        <div id="lista2" class="lista1">
+                            <h5>Ilhas de calor urbanas</h5>
+                            <span>Biologia</span>
+                            <p>Evoluindo</p>
+                            <span>8.7</span>
+                        </div>
+                        <div id="lista3" class="lista1">
+                            <h5>Ilhas de calor urbanas</h5>
+                            <span>Quimica</span>
+                            <p>progresso</p>
+                            <span>--</span>
+                        </div>
+                        <div id="lista4" class="lista1">
+                            <h5>Plásticos biodegradáveis</h5>
+                            <span>Portugues</span>
+                            <p>evoluindo</p>
+                            <span>7.3</span>
+                        </div>
+                    </div>
+                </div>
+
+        </main>
+    </div>
+</body>
+
+</html>
