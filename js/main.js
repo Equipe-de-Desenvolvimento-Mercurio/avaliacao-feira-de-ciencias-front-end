@@ -509,7 +509,10 @@
                 document.querySelector(".numero-p-avaliar").textContent = summary.total_projetos || 0;
                 document.querySelector(".numero-realizadas").textContent = summary.total_avaliados || 0;
                 document.querySelector(".numero-pendente").textContent = summary.total_nao_avaliados || 0;
-                document.querySelector(".porcentagem-progressso").textContent = summary.total_projetos ? Math.round((summary.total_avaliados / summary.total_projetos) * 100) + "%" : "0%";
+                var progressPercent = summary.total_projetos ? Math.round((summary.total_avaliados / summary.total_projetos) * 100) : 0;
+                document.querySelector(".porcentagem-progressso").textContent = progressPercent + "%";
+                var progressBar = document.querySelector(".progress-bar > span");
+                if (progressBar) progressBar.style.width = progressPercent + "%";
                 var score = document.querySelector(".pontuacao-total");
                 if (score) score.textContent = panel.resumo.pontuacao_total || "0";
             }).catch(showError);
@@ -591,7 +594,7 @@
         return routes[key];
     }
 
-    document.querySelectorAll("#navegador .btn, footer .inicio, footer .projetos, footer .avaliaçoes, footer .perfil").forEach(function (control) {
+    document.querySelectorAll("#navegador .btn, footer .inicio, footer .projetos, footer .avaliaçoes, footer .perfil, footer .footer-item").forEach(function (control) {
         var destination = routeFor(control.textContent);
         if (!destination) return;
 
@@ -604,8 +607,10 @@
             window.location.href = destination;
         });
 
-        if (destination === window.location.pathname.split("/").pop()) {
+        var currentPage = window.location.pathname.split("/").pop();
+        if (destination === currentPage) {
             control.setAttribute("aria-current", "page");
+            control.classList.add("active");
         }
     });
 
@@ -734,7 +739,7 @@
         });
     });
 
-    document.querySelectorAll(".Ver, #btn-prof, #btn-novo-projeto").forEach(function (control) {
+    document.querySelectorAll(".Ver, .btn-primary-block, #btn-prof, #btn-novo-projeto").forEach(function (control) {
         control.type = "button";
         control.addEventListener("click", function () {
             if (control.id === "btn-prof") {

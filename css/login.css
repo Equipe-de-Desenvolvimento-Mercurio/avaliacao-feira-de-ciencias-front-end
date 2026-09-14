@@ -1,356 +1,169 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-
-
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'poppins';
-}
-
-
-
+/* Login — estilos específicos da página (tokens e base em global.css) */
 
 .container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
+    display: flex;
+    min-height: 100vh;
 }
-
-
-
 
 .lado-esquerdo {
-  width: 40%;
-  height: 100%;
-  background-color: #cc4c04;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 40px;
-}
-.lado-esquerdo p {
-  width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 38%;
+    min-height: 100vh;
+    padding: 48px clamp(32px, 5vw, 80px);
+    background: var(--sic-accent);
+    color: #fff;
 }
 
-
-
-
-.lado-esquerdo h1{
-    font-weight: 700;
-    font-size: 30px;
-    margin-bottom: 15px;
-}
-
-
-
-
-.lado-esquerdo p {
-  font-size: 12px;
-
-
-}
-
-
-.texto-esquerda p {
-    margin-bottom: 40px;
-
-
-}
-
-
-.icone-esquerdo{
-    width: 60px;
-    height: 60px;
-    background-color: rgba(67, 69, 70, 0.328);
-    display: flex ;
+.icone-esquerdo {
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
-    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .16);
+    font-size: 22px;
 }
 
+.texto-esquerda {
+    max-width: 360px;
+    margin-top: auto;
+    margin-bottom: 8vh;
+}
 
+.lado-esquerdo h1 {
+    margin-bottom: 12px;
+    color: #fff;
+    font-size: clamp(24px, 2.5vw, 32px);
+    letter-spacing: .02em;
+}
 
+.lado-esquerdo p {
+    color: rgba(255, 255, 255, .82);
+    font-size: 13px;
+    line-height: 1.7;
+}
 
 .lado-direito {
-  width: 60%;
-  height: 100%;
-  background-color: #fff;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 62%;
+    min-height: 100vh;
+    padding: 40px 24px;
+    background: var(--sic-background);
+    color: var(--sic-ink);
 }
 
+.login {
+    width: min(100%, 420px);
+    margin: 0 0 24px;
+}
 
+.login h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
 
+.login p,
+.problema p {
+    color: var(--sic-muted);
+    font-size: 13px;
+}
 
 .login-card {
-  padding: 45px 50px;
-  background-color: #fafafa2a;
-  border-radius: 18px;
- 
-  color: #000;
-  box-shadow: 0px 1px 15px #33333341;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  border: 1px solid #6362623b;
-
-
-
-
-
-
-
-
-
-
-
-
+    width: min(100%, 420px);
+    padding: 32px;
+    border: 1px solid var(--sic-line);
+    border-radius: var(--sic-radius-lg);
+    background: var(--sic-surface);
+    box-shadow: var(--sic-shadow);
 }
 
-
-
-
-.login{
-    color: #000;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-right: 170px;
-  margin-bottom: 25px;
-
-
-
-
+.login-card form,
+.campo-email,
+.campo-senha,
+.campo-perfil {
+    width: 100%;
 }
 
-
-
-
-.campo-email input{
- width: 100%;
- border: 1px solid #7a7a79a0;
- border-radius: 9px;
- padding: 6px 10px;
- font-size: 21px;
- outline: none;
- margin-bottom: 10px;
-
-
-
-
- 
+.campo-email label,
+.campo-senha label,
+.campo-perfil label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--sic-ink);
+    font-size: 13px;
+    font-weight: 600;
 }
 
-
-
-
-
-
-.campo-email label{
-    font-size: 12px
+.campo-senha,
+.campo-perfil {
+    margin-top: 16px;
 }
 
-
-
-
-.icone-email {
-    position: relative;
-
-
-}
-
-
-
-
-.icone-email i {
-    position: absolute;
-    left: 15px;
-    top: 43%;
-    transform: translateY(-50%);
-    z-index: 1;
-    color: #7a7a79a0;
-   
-}
-
-
-
-
-.icone-email input {
-    padding-left: 45px;
-}
-
-
-
-
-.icone-email i {
-    color: #7a7a79a0;
-}
-
-
-
-
-.campo-senha input{
-   width: 100%;
- border: 1px solid #7a7a79a0;
- border-radius: 9px;
- padding: 6px 10px;
- font-size: 21px;
- outline: none;
-
-
-
-
-}
-
-
-
-
-.campo-senha label{
-  font-size: 12px;
-
-
-
-
-}
+.icone-email,
 .icone-senha {
     position: relative;
-    color: #7a7a79a0;
 }
 
-
-
-
+.icone-email i,
 .icone-senha i {
     position: absolute;
-    left: 15px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
-    color: #7a7a79a0;
+    color: #8a96a3;
+    pointer-events: none;
 }
 
-
-
-
-.icone-senha input {
-    padding-left: 45px;
+.login-card .icone-email input,
+.login-card .icone-senha input {
+    padding-left: 46px;
 }
 
-
-
-
-
-
-.entrar{
-width: 100%;
- border-radius: 7px;
- padding: 7px 10px;
- font-size: 15px;
- outline: none;
- color: #fff;
- background-color: #cc4c04;
- margin-top: 15px;
- border: none;
- margin-top: 25px;
- cursor: pointer;
- 
+.entrar {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 24px;
+    padding: 10px 16px;
+    border-radius: var(--sic-radius);
+    font-size: 14px;
+    font-weight: 600;
 }
 
-
-.entrar:hover{
-    background-color: #b04203;
+.problema {
+    width: min(100%, 420px);
+    margin-top: 18px;
+    text-align: center;
 }
 
-
-
-
-.problema{
-  color: #000;
-  margin-top: 20px;
-  font-size: 15px;
-}
-
-
-
-
-
-
-@media (max-width: 600px) {
-
+@media (max-width: 760px) {
     .container {
-        align-items: center;
-        justify-content: center;
-
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
+        display: block;
     }
 
     .lado-esquerdo {
-        display: none;
         width: 100%;
-        height: auto;
-        padding: 30px;
+        min-height: auto;
+        padding: 28px 24px;
     }
 
-    .lado-esquerdo p {
-        width: 100%;
+    .texto-esquerda {
+        margin: 44px 0 0;
     }
 
     .lado-direito {
         width: 100%;
-        height: auto;
-        padding: 30px 20px;
+        min-height: auto;
+        padding: 40px 20px 32px;
     }
 
     .login-card {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 35px 25px;
-        width: 100%;
+        padding: 24px;
     }
-
-    .login {
-        margin-right: 0;
-    }
-
-    .campo-email input,
-    .campo-senha input {
-        width: 100%;
-        font-size: 18px;
-    }
-
-    .entrar {
-        width: 100%;
-    }
-}
-
-.campo-perfil {
-    width: 100%;
-    margin-top: 12px;
-}
-
-.campo-perfil label {
-    display: block;
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-
-.campo-perfil select {
-    width: 100%;
-    border: 1px solid #7a7a79a0;
-    border-radius: 9px;
-    padding: 9px 10px;
-    font-size: 15px;
-    background: #fff;
-    outline: none;
 }

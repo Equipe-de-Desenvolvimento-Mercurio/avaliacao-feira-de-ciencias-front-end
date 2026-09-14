@@ -1,155 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-
-
-
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/4.0.0/uicons-regular-straight/css/uicons-regular-straight.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/global.css">
-
-
-
-
     <title>Área do avaliador</title>
     <script src="js/config.js" defer></script>
     <script src="js/services/service.js" defer></script>
     <script src="js/utils/util.js" defer></script>
     <script src="js/main.js" defer></script>
 </head>
-
-
-
-
-<body>
-    <div class="icone-feira">
-        <i class="fa-solid fa-flask"></i>
-    </div>
-    <H1 class="feira">Feira de ciência</H1>
-    <hr class="hr">
-    <div class="avaliador">
-        <div class="icone-user">
-            <i class="fa-solid fa-circle-user"></i>
+<body class="app-mobile">
+    <header class="app-header">
+        <div class="icone-feira">
+            <i class="fa-solid fa-flask"></i>
         </div>
-        <div class="ola-avaliador">
-            <h2 class="ola">Olá, Avaliador! </h2>
-            <p class="avaliador-ofc-sic">Avaliador Oficial . SIC 2026</p>
+        <h1 class="feira">Feira de Ciências</h1>
+    </header>
 
-
-
-
-            <button class="Ver" type="submit">Ver projetos</button>
-            <div class="icone-ver">
-                <i class="fa-regular fa-eye"></i>
+    <main>
+        <section class="welcome-card avaliador">
+            <div class="avatar">
+                <i class="fa-solid fa-circle-user"></i>
             </div>
-        </div>
-    </div>
+            <div class="ola-avaliador">
+                <h2 class="ola">Olá, Avaliador!</h2>
+                <p class="avaliador-ofc-sic">Avaliador Oficial · SIC 2026</p>
+                <button class="btn-primary-block Ver" type="button">
+                    <i class="fa-regular fa-eye"></i>
+                    Ver projetos
+                </button>
+            </div>
+        </section>
 
+        <section class="progress-panel">
+            <div class="progress-header">
+                <div>
+                    <h2>Seu progresso</h2>
+                    <p class="progress-subtitle">Acompanhamento das avaliações da SIC 2026</p>
+                </div>
+                <span class="progress-badge porcentagem-progressso">
+                    <i class="fi fi-rs-arrow-trend-up"></i>
+                    70%
+                </span>
+            </div>
+            <div class="progress-meta">
+                <span>Progresso geral</span>
+                <span>7 de 10 avaliados</span>
+            </div>
+            <div class="progress-bar">
+                <span style="width: 70%"></span>
+            </div>
+        </section>
 
+        <section class="stats-grid">
+            <article class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-regular fa-folder"></i>
+                </div>
+                <div class="stat-body">
+                    <p class="stat-label">Projetos para avaliar</p>
+                    <p class="stat-value numero-p-avaliar">10</p>
+                </div>
+            </article>
 
+            <article class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-regular fa-circle-check"></i>
+                </div>
+                <div class="stat-body">
+                    <p class="stat-label">Avaliações realizadas</p>
+                    <p class="stat-value numero-realizadas">7</p>
+                </div>
+            </article>
 
+            <article class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                <div class="stat-body">
+                    <p class="stat-label">Avaliações pendentes</p>
+                    <p class="stat-value numero-pendente">3</p>
+                </div>
+            </article>
+        </section>
+    </main>
 
-
-
-
-
-
-
-
-    <div class="progresso">
-        <h2>Seu progresso</h2>
-        <div class="icone-porcentagem"><i class="fi fi-rs-arrow-trend-up"></i></div>
-        <p class="porcentagem-progressso">70%</p>
-        <p class="texto1">Acompanhamento das avaliaçães da <br>SIC 2026</p>
-        <div class="progresso-geral">
-        <p>Progresso Geral </p>
-        <p>7 de 10 avaliados</p>
-        </div>
-
-
-
-
-        <div class="progresso-geral-barra"></div> <div class="progresso-geral-barra-cima"></div>
-    </div>
-
-
-
-
-
-
-
-
-    <div class="projetos-p-avaliar">
-        <div class="icone-arquivo">
-            <i class="fa-regular fa-folder"></i>
-        </div>
-        <h3 class="text-paraavaliar">Projetos para avaliar</h3>
-        <h1 class="numero-p-avaliar">10</h1>
-    </div>
-
-
-
-
-    <div class="avalia-realizada">
-        <div class="icone-realizadas">
-            <i class="fa-regular fa-circle-check"></i>
-        </div>
-        <h3 class="text-realizadas">Avaliações realizadas</h3>
-        <h1 class="numero-realizadas">7</h1>
-    </div>
-
-
-
-
-    <div class="avalia-pendente">
-        <div class="icone-pendente">
-           <i class="fa-solid fa-circle-exclamation"></i>
-        </div>
-        <h3 class="text-pendente">Avaliações pendentes</h3>
-        <h1 class="numero-pendente">3</h1>
-    </div>
-
-
-
-
-    <footer>
-    <div class="footer">
-        <div class="icone-houme">
-            <i class="fa-solid fa-house"></i>
-        </div>
-        <button class="inicio" type="submit">Inicio</button>
-        <div class="icone-projetos">
-            <i class="fa-solid fa-folder"></i>
-        </div>
-        <button class="projetos" type="submit">Projetos</button>
-        <div class="icone-avaliaçoes">
-            <i class="fa-solid fa-square-check"></i>
-        </div>
-        <button class="avaliaçoes" type="submit">Avaliaçoes</button>
-        <div class="icone-perfil">
-            <i class="fa-solid fa-user"></i>
-        </div>
-        <button class="perfil" type="submit">perfil</button>
-    </div>
-</footer>
-   
-
-
-
-
-
-
-
-
+    <footer class="app-footer">
+        <nav class="footer" aria-label="Navegação principal">
+            <button class="footer-item inicio" type="button">
+                <i class="fa-solid fa-house"></i>
+                Início
+            </button>
+            <button class="footer-item projetos" type="button">
+                <i class="fa-solid fa-folder"></i>
+                Projetos
+            </button>
+            <button class="footer-item avaliaçoes" type="button">
+                <i class="fa-solid fa-square-check"></i>
+                Avaliações
+            </button>
+            <button class="footer-item perfil" type="button">
+                <i class="fa-solid fa-user"></i>
+                Perfil
+            </button>
+        </nav>
+    </footer>
 </body>
-
-
-
-
 </html>
-
-
