@@ -582,14 +582,23 @@
             var summary = dashboard.resumo || {};
             var eventData = dashboard.evento || {};
             var cards = document.querySelectorAll("#secao-dashboard .projetos .card .number h2");
-            if (cards[0]) cards[0].textContent = summary.total_projetos || 0;
-            if (cards[1]) cards[1].textContent = summary.total_avaliacoes || 0;
-            if (cards[2]) cards[2].textContent = summary.projetos_avaliados || 0;
-            if (cards[3]) cards[3].textContent = summary.projetos_pendentes || 0;
+            var hasProjects = Number(summary.total_projetos) > 0;
+            var cardValues = hasProjects ? [
+                summary.total_projetos,
+                summary.total_avaliacoes,
+                summary.projetos_avaliados,
+                summary.projetos_pendentes
+            ] : ["--", "--", "--", "--"];
+            cards.forEach(function (card, index) {
+                card.textContent = cardValues[index];
+            });
+            document.querySelectorAll("#secao-dashboard .projetos .card .number > p").forEach(function (label) {
+                label.textContent = hasProjects ? "Dados atualizados pela API" : "Nenhum dado encontrado";
+            });
             var percentage = document.querySelector("#secao-dashboard .porcentagem h3");
-            if (percentage) percentage.textContent = (summary.percentual_conclusao || 0) + "%";
+            if (percentage) percentage.textContent = hasProjects ? (summary.percentual_conclusao || 0) + "%" : "--";
             var progress = document.querySelector("#secao-dashboard .barra-embaixo > div");
-            if (progress) progress.style.width = (Number(summary.percentual_conclusao) || 0) + "%";
+            if (progress) progress.style.width = hasProjects ? (Number(summary.percentual_conclusao) || 0) + "%" : "0%";
             var title = document.querySelector(".cabeca > h2");
             var subtitle = document.querySelector(".cabeca > p");
             if (title && eventData.nome_evento) title.textContent = eventData.nome_evento;

@@ -18,7 +18,7 @@
 
   <body>
     <div class="container">
-      <div class="lado-esquerdo">
+      <aside class="lado-esquerdo" aria-label="Sobre a Plataforma SIC">
         <div class="icone-esquerdo">
           <i class="fa-solid fa-flask"></i>
         </div>
@@ -32,18 +32,20 @@
             relatórios com precisão institucional.
           </p>
         </div>
-      </div>
+        <div class="marca-esquerda">Colégio Mercúrio · SIC 2026</div>
+      </aside>
 
-      <section class="lado-direito">
+      <main class="lado-direito">
         <div class="login">
+          <span class="login-eyebrow">Acesso institucional</span>
           <h1>Bem-vindo!</h1>
-          <p>Entre para acessar o sistema</p>
+          <p>Entre com suas credenciais para continuar.</p>
         </div>
 
         <div class="login-card">
-          <form action="login" method="POST">
+          <form action="login" method="POST" autocomplete="on">
             <div class="campo-email">
-              <label for="email"><b>E-mail</b></label>
+              <label for="email">E-mail</label>
 
               <div class="icone-email">
                 <i class="fa-regular fa-envelope"></i>
@@ -52,12 +54,13 @@
                   id="email"
                   name="email"
                   placeholder="seu@email.com"
+                  autocomplete="email"
                   required
                 />
               </div>
             </div>
             <div class="campo-senha">
-              <label for="senha"><b>Senha</b></label>
+              <label for="senha">Senha</label>
 
               <div class="icone-senha">
                 <i class="fa-solid fa-lock"></i>
@@ -66,18 +69,22 @@
                   id="senha"
                   name="senha"
                   placeholder="*******"
+                  autocomplete="current-password"
                   required
                 />
               </div>
             </div>
-            <button class="entrar" type="submit">Entrar ➜</button>
+            <button class="entrar" type="submit">
+              <span>Entrar</span>
+              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
           </form>
         </div>
 
         <div class="problema">
           <p>Problemas para acessar? Contate nosso suporte.</p>
         </div>
-      </section>
+      </main>
     </div>
   </body>
 </html>

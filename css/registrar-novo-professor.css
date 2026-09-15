@@ -62,58 +62,6 @@
 .top1 {
     padding-top: 8px;
 }
-<<<<<<< HEAD
-
-
-.subtitulo>h3 {
-    font-size: 25px;
-}
-
-.subtitulo {
-    border-bottom: solid 2px grey;
-}
-
-.oi {
-    gap: 100px;
-    padding: 20px;
-    display: flex;
-}
-.oie > input{
-    width: 300px;
-    padding: 10px;
-    border: solid 2px grey;
-    border-radius: 5px;
-}
-.oiu > input{
-        width:350px;
-        border: solid 2px grey;
-    border-radius: 5px;
-    padding: 10px;
-}
-.oi > .oie > label{
-
-   font-size: 15px;
-   font-weight: 400;
-}
-.oiu > label{
-   font-size: 15px;
-   font-weight: 400;
-}
-.oie {
-    display: flex;
-    flex-direction: column;
-}
-
-.oiu {
-    display: flex;
-    flex-direction: column;
-}
-
-.eae{
-    gap: 100px;
-    padding: 20px;
-    display: flex;
-}
 
 .eventos-professor {
     display: flex;
@@ -169,10 +117,3 @@
     color: #687386;
     font-size: 11px;
 }
-
-.eae-boy > label{
-   font-size: 15px;
-   font-weight: 400;
-}
-=======
->>>>>>> 6b779c202d7fccb73c7ff11ea3926ff895278d61
