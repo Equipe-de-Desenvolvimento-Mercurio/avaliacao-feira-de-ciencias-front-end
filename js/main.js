@@ -89,6 +89,31 @@
         }).catch(showError);
     }
 
+    function loadProfessorEventOptions() {
+        var container = document.querySelector("#professor-eventos");
+        var user = currentUser();
+        if (!container || !user || !api || !api.isConfigured()) return;
+
+        api.events.listByUser(userId(user)).then(function (response) {
+            var events = normalizeEvents(response);
+            container.innerHTML = "";
+            if (!events.length) {
+                container.innerHTML = "<p class=\"eventos-vazio\">Nenhum evento disponível.</p>";
+                return;
+            }
+            events.forEach(function (event) {
+                var label = document.createElement("label");
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = event.id_evento;
+                label.className = "evento-opcao";
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(event.nome_evento + " - " + event.status));
+                container.appendChild(label);
+            });
+        }).catch(showError);
+    }
+
     function loadCoordinatorProfessors() {
         var list = document.querySelector("#lista-professores-api");
         var user = currentUser();
@@ -455,7 +480,6 @@
             "pagina-professor.html",
             "pagina-avaliadores.html",
             "visualizar-projeto.html",
-            "ranking.html",
             "registrar-novo-professor.html"
             ,"monitoramento-de-professores.html"
         ];
@@ -561,11 +585,215 @@
             if (cards[3]) cards[3].textContent = summary.projetos_pendentes || 0;
             var percentage = document.querySelector("#secao-dashboard .porcentagem h3");
             if (percentage) percentage.textContent = (summary.percentual_conclusao || 0) + "%";
+            var progress = document.querySelector("#secao-dashboard .barra-embaixo > div");
+            if (progress) progress.style.width = (Number(summary.percentual_conclusao) || 0) + "%";
             var title = document.querySelector(".cabeca > h2");
             var subtitle = document.querySelector(".cabeca > p");
             if (title && eventData.nome_evento) title.textContent = eventData.nome_evento;
             if (subtitle && eventData.status) subtitle.textContent = "Status: " + eventData.status;
+            renderDashboardChart(dashboard.grafico || []);
+            renderRecentActivities(dashboard.atividades_recentes || []);
+            renderNotifications(dashboard.notificacoes || []);
         }).catch(showError);
+    }
+
+    function renderNotifications(notifications) {
+        var list = document.querySelector("#lista-notificacoes");
+        var total = document.querySelector("#notificacoes-total");
+        var counter = document.querySelector("#notificacoes-contador");
+        if (!list) return;
+        list.innerHTML = "";
+        if (total) total.textContent = notifications.length;
+        if (counter) {
+            counter.textContent = notifications.length > 9 ? "9+" : notifications.length;
+            counter.hidden = notifications.length === 0;
+        }
+        if (!notifications.length) {
+            list.innerHTML = "<p class=\"notificacoes-vazio\">Nenhuma notificação.</p>";
+            return;
+        }
+
+        notifications.forEach(function (notification) {
+            var item = document.createElement("div");
+            item.className = "notificacao-item";
+            item.innerHTML = "<span class=\"notificacao-marcador\"></span><div><p></p><small></small></div>";
+            item.querySelector("p").textContent = notification.mensagem || notification.message || "Nova notificação";
+            item.querySelector("small").textContent = formatActivityDate(notification.data || notification.data_criacao);
+            list.appendChild(item);
+        });
+    }
+
+    function setupNotifications() {
+        var button = document.querySelector("#btn-notificacoes");
+        var panel = document.querySelector("#painel-notificacoes");
+        if (!button || !panel) return;
+        button.addEventListener("click", function (event) {
+            event.stopPropagation();
+            var isOpen = button.getAttribute("aria-expanded") === "true";
+            button.setAttribute("aria-expanded", String(!isOpen));
+            panel.hidden = isOpen;
+        });
+        document.addEventListener("click", function (event) {
+            if (!event.target.closest(".notificacoes")) {
+                button.setAttribute("aria-expanded", "false");
+                panel.hidden = true;
+            }
+        });
+    }
+
+    function renderDashboardChart(data) {
+        var chart = document.querySelector("#secao-dashboard .grafico");
+        if (!chart) return;
+        chart.innerHTML = "";
+        chart.classList.toggle("grafico-visivel", data.length > 0);
+        if (!data.length) {
+            return;
+        }
+
+        var max = Math.max.apply(null, data.map(function (item) { return Number(item.avaliacoes) || 0; })) || 1;
+        data.forEach(function (item) {
+            var value = Number(item.avaliacoes) || 0;
+            var bar = document.createElement("div");
+            bar.className = "grafico-coluna";
+            bar.innerHTML = "<div class=\"grafico-barra\"><b></b><span></span></div><small></small>";
+            bar.querySelector(".grafico-barra").title = value + " avaliação(ões)";
+            bar.querySelector("b").textContent = value;
+            bar.querySelector("span").style.height = Math.max((value / max) * 100, 4) + "%";
+            bar.querySelector("small").textContent = formatChartDate(item.data);
+            chart.appendChild(bar);
+        });
+    }
+
+    function formatChartDate(value) {
+        var date = String(value || "");
+        return date.length >= 10 ? date.slice(8, 10) + "/" + date.slice(5, 7) : date;
+    }
+
+    function renderRecentActivities(activities) {
+        var list = document.querySelector("#secao-dashboard .activity-list");
+        if (!list) return;
+        list.innerHTML = "";
+        if (!activities.length) {
+            list.innerHTML = "<p class=\"api-empty\">Nenhuma atividade recente.</p>";
+            return;
+        }
+
+        activities.forEach(function (activity) {
+            var item = document.createElement("div");
+            item.className = "activity-item";
+            item.innerHTML = "<div class=\"activity-icon icon-approved\">&#10003;</div>" +
+                "<div class=\"activity-text\"><p></p><span></span></div>";
+            item.querySelector(".activity-text p").textContent = activity.mensagem || "Avaliação registrada";
+            item.querySelector(".activity-text span").textContent = formatActivityDate(activity.data);
+            list.appendChild(item);
+        });
+    }
+
+    function formatActivityDate(value) {
+        if (!value) return "Data não informada";
+        var date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+    }
+
+    function loadRanking() {
+        var ranking = document.querySelector(".ranking");
+        var user = currentUser();
+        if (!ranking || !user || !api || !api.isConfigured()) return;
+
+        var eventSelect = document.querySelector("#evento-ranking");
+        var eventId = getEventId();
+        var eventsRequest = api.events.listByUser(userId(user)).then(function (response) {
+            var events = normalizeEvents(response);
+            if (eventSelect) {
+                eventSelect.innerHTML = "<option value=\"\">Selecione um evento</option>";
+                events.forEach(function (event) {
+                    var option = document.createElement("option");
+                    option.value = event.id_evento;
+                    option.textContent = event.nome_evento;
+                    eventSelect.appendChild(option);
+                });
+            }
+            return events;
+        });
+
+        var eventRequest = eventsRequest.then(function (events) {
+            var selectedEventId = eventId || (events[0] && events[0].id_evento);
+            if (!selectedEventId) throw new Error("Nenhum evento vinculado ao usuário.");
+            window.localStorage.setItem("sic_current_event", selectedEventId);
+            if (eventSelect) eventSelect.value = selectedEventId;
+            return api.ranking.list(selectedEventId);
+        }).then(renderRanking).catch(showError);
+
+        if (eventSelect) {
+            eventSelect.addEventListener("change", function () {
+                if (!eventSelect.value) return;
+                window.localStorage.setItem("sic_current_event", eventSelect.value);
+                api.ranking.list(eventSelect.value).then(renderRanking).catch(showError);
+            });
+        }
+    }
+
+    function renderRanking(data) {
+        var projects = Array.isArray(data.ranking) ? data.ranking : [];
+        var eventName = data.evento && data.evento.nome_evento;
+        var subtitle = document.querySelector(".ranking > .title .text p");
+        if (subtitle) subtitle.textContent = eventName ? "Ranking dos projetos do evento " + eventName + "." : "Ranking dos projetos do evento selecionado.";
+
+        var cards = document.querySelectorAll(".ranking > .top > .card");
+        var podiumOrder = [1, 0, 2];
+        cards.forEach(function (card, index) {
+            var project = projects[podiumOrder[index]];
+            var name = card.querySelector(".principal h1");
+            var summary = card.querySelector(".principal > p");
+            var score = card.querySelector(".score h4");
+            var evaluations = card.querySelector(".avaliacoes .total");
+            var position = card.querySelector(".num p");
+            if (!project) {
+                card.hidden = true;
+                return;
+            }
+            card.hidden = false;
+            if (position) position.textContent = project.colocacao || "-";
+            if (name) name.textContent = project.nome_projeto || "Projeto sem nome";
+            if (summary) summary.textContent = "Estande " + (project.estande || "-");
+            if (score) score.textContent = formatRankingNumber(project.nota_media);
+            if (evaluations) evaluations.textContent = (Number(project.total_avaliacoes) || 0) + " avaliação(ões)";
+        });
+
+        var list = document.querySelector(".ranking .lista-projetos");
+        if (!list) return;
+        list.innerHTML = "";
+        if (!projects.length) {
+            list.innerHTML = "<p class=\"ranking-vazio\">Nenhum projeto encontrado neste evento.</p>";
+            return;
+        }
+        projects.slice(3).forEach(function (project) {
+            list.appendChild(createRankingRow(project));
+        });
+    }
+
+    function createRankingRow(project) {
+        var row = document.createElement("div");
+        var evaluated = Number(project.total_avaliacoes) > 0;
+        row.className = "tabela-linha";
+        row.innerHTML = "<span class=\"posicao\"></span>" +
+            "<div class=\"projeto-info\"><strong></strong><span></span></div>" +
+            "<span></span><strong class=\"nota\"></strong><span></span>" +
+            "<span class=\"status\"></span>";
+        row.querySelector(".posicao").textContent = project.colocacao || "-";
+        row.querySelector(".projeto-info strong").textContent = project.nome_projeto || "Projeto sem nome";
+        row.querySelector(".projeto-info span").textContent = project.resumo || "Sem resumo informado";
+        row.querySelector(".projeto-info").nextElementSibling.textContent = "Estande " + (project.estande || "-");
+        row.querySelector(".nota").textContent = formatRankingNumber(project.nota_media);
+        row.querySelector(".nota").nextElementSibling.textContent = (Number(project.total_avaliacoes) || 0) + " avaliação(ões)";
+        row.querySelector(".status").textContent = evaluated ? "Avaliado" : "Pendente";
+        row.querySelector(".status").classList.add(evaluated ? "aprovado" : "pendente");
+        return row;
+    }
+
+    function formatRankingNumber(value) {
+        return (Number(value) || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     var routes = {
@@ -628,12 +856,15 @@
 
     if (document.querySelector("#eventos-disponiveis")) loadEventSelection();
     if (document.querySelector("#evento-projeto")) loadProjectEventOptions();
+    if (document.querySelector("#professor-eventos")) loadProfessorEventOptions();
     if (document.querySelector("#evento-coordenador")) loadCoordinatorEventSelector();
     if (document.querySelector("#lista-professores-api")) loadCoordinatorProfessors();
     if (document.querySelector("#lista-avaliadores-api")) loadCoordinatorEvaluators();
     if (document.querySelector("#monitor-professor")) loadProfessorMonitoring();
     if (document.querySelector("#lista-projetos-api")) loadCoordinatorProjects();
     if (document.querySelector(".projetos-lista-api")) loadProfessorProjects();
+    if (document.querySelector(".ranking")) loadRanking();
+    setupNotifications();
     loadProfessorHome();
     loadCoordinatorDashboard();
 
@@ -667,13 +898,16 @@
     var registerProfessorButton = document.querySelector("#registrar-professor");
     if (registerProfessorButton && api && api.isConfigured()) {
         registerProfessorButton.addEventListener("click", function () {
-            var eventId = getEventId();
             var name = document.querySelector("#professor-nome").value.trim();
             var email = document.querySelector("#professor-email").value.trim();
             var type = document.querySelector("#professor-tipo").value;
             var password = document.querySelector("#professor-senha").value;
-            if (!eventId || !name || !email || !type || !password) {
-                window.alert("Preencha todos os dados do professor.");
+            var eventCheckboxes = document.querySelectorAll("#professor-eventos input[type=checkbox]:checked");
+            var eventIds = Array.from(eventCheckboxes).map(function (checkbox) {
+                return Number(checkbox.value);
+            }).filter(function (id) { return Number.isInteger(id) && id > 0; });
+            if (!name || !email || !type || !password || !eventIds.length) {
+                window.alert("Preencha todos os dados e selecione pelo menos um evento.");
                 return;
             }
             registerProfessorButton.disabled = true;
@@ -683,7 +917,7 @@
                 senha: password,
                 tipo_usuario: "professor",
                 tipo_avaliador: type,
-                eventos: [Number(eventId)]
+                eventos: eventIds
             }).then(function () {
                 window.location.href = "Pagina-professor.html";
             }).catch(function (error) {

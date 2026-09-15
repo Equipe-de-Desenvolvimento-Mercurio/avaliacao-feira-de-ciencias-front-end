@@ -24,6 +24,21 @@ header {
     background-color: grey;
 }
 
+.evento-ranking-label {
+    color: #687386;
+    font-size: 12px;
+}
+
+#evento-ranking {
+    max-width: 210px;
+    padding: 8px 10px;
+    border: 1px solid #d7dce5;
+    border-radius: 6px;
+    background: #fff;
+    color: #182333;
+    font-size: 12px;
+}
+
 .title {
     display: flex;
     justify-content: space-evenly;

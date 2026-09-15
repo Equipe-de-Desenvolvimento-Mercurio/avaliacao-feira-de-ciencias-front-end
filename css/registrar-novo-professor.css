@@ -236,6 +236,62 @@ a {
     padding: 20px;
     display: flex;
 }
+
+.eventos-professor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 20px;
+}
+
+.eventos-label {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.lista-eventos {
+    width: 350px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 6px;
+    border: solid 2px grey;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.evento-opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.evento-opcao:hover {
+    background-color: #f2f3f7;
+}
+
+.evento-opcao input {
+    width: 16px;
+    height: 16px;
+    accent-color: #274690;
+}
+
+.eventos-carregando,
+.eventos-vazio {
+    margin: 8px;
+    color: #687386;
+    font-size: 12px;
+}
+
+.eventos-professor small {
+    color: #687386;
+    font-size: 11px;
+}
+
 .eae-boy > label{
    font-size: 15px;
    font-weight: 400;

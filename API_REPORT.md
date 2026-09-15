@@ -20,6 +20,7 @@ Rotas base:
 | Avaliacoes | `/review` |
 | Professores | `/teacher` |
 | Criterios | `/criterios` |
+| Ranking | `/ranking` |
 
 Todas as requisicoes com JSON devem usar:
 
@@ -218,11 +219,89 @@ Retorna o painel consolidado do evento. Requer token de coordenador.
       "percentual_conclusao": "100.0",
       "concluido": true
     }
-  ]
+  ],
+  "grafico": [
+    {
+      "data": "2026-09-15",
+      "avaliacoes": 8
+    }
+  ],
+  "atividades_recentes": [
+    {
+      "tipo": "avaliacao",
+      "mensagem": "Maria Silva avaliou Energia Sustentavel",
+      "data": "2026-09-15T13:00:00.000Z"
+    }
+  ],
+  "notificacoes": []
 }
 ```
 
 Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
+
+O campo `grafico` agrupa a quantidade de avaliacoes por dia. A data usa o formato `YYYY-MM-DD`.
+
+O campo `atividades_recentes` lista as ultimas atividades do evento. Atualmente, cada item de avaliacao possui `tipo`, `mensagem` e `data`.
+
+O campo `notificacoes` lista as notificacoes do evento. Quando nao houver notificacoes, a API deve retornar um array vazio (`[]`).
+
+  ### GET `/ranking/:id_evento`
+
+  Retorna o ranking de todos os projetos de um evento, ordenado pela maior media das notas. Requer token JWT, mas pode ser consultado por qualquer usuario autenticado.
+
+  #### Parametros
+
+  | Parametro | Tipo | Descricao |
+  |---|---|---|
+  | `id_evento` | inteiro | ID do evento |
+
+  #### Exemplo de requisicao
+
+  ```http
+  GET http://localhost:3000/ranking/1
+  Authorization: Bearer SEU_TOKEN
+  ```
+
+  #### Resposta `200`
+
+  ```json
+  {
+    "evento": {
+      "id_evento": "1",
+      "nome_evento": "Feira de Ciencias 2026"
+    },
+    "ranking": [
+      {
+        "colocacao": 1,
+        "id_projeto": "3",
+        "nome_projeto": "Energia Sustentavel",
+        "resumo": "Estudo sobre energia solar",
+        "estande": "12",
+        "nota_media": "85.5",
+        "total_avaliacoes": 4
+      },
+      {
+        "colocacao": 2,
+        "id_projeto": "1",
+        "nome_projeto": "Agua Limpa",
+        "resumo": "Sistema de filtragem de agua",
+        "estande": "8",
+        "nota_media": "79.0",
+        "total_avaliacoes": 3
+      }
+    ]
+  }
+  ```
+
+  Todos os projetos do evento sao listados, inclusive os que ainda nao receberam avaliacao. Projetos sem avaliacao possuem `nota_media` igual a `0`. Em caso de empate, os projetos recebem a mesma `colocacao`.
+
+  #### Resposta `404`
+
+  ```json
+  {
+    "error": "Evento não encontrado"
+  }
+  ```
 
 ## 4. Projetos
 
@@ -328,6 +407,25 @@ O evento precisa estar com status `em_andamento`.
 ```
 
 Cada nota deve ser numerica e estar entre `0` e `10`. Atualmente sao exigidas exatamente seis notas.
+
+O backend calcula a pontuacao sem receber o peso do frontend:
+
+```text
+pontuacao_total = (nota1 + nota2 + nota3 + nota4 + nota5 + nota6) * peso
+```
+
+Pesos atuais:
+
+| Tipo de avaliador | Peso |
+|---|---:|
+| `artistico` | `1` |
+| `tecnico` | `3` |
+
+Exemplo para um avaliador tecnico:
+
+```text
+(8 + 9 + 8.5 + 9 + 8 + 9) * 3 = 154.5
+```
 
 #### Resposta `201`
 

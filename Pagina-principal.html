@@ -42,7 +42,21 @@
                 <select id="evento-coordenador" aria-label="Selecionar evento atual">
                     <option value="">Carregando eventos...</option>
                 </select>
-                <img src="assets/images/sino.svg" alt="Notificações">
+                <div class="notificacoes">
+                    <button id="btn-notificacoes" type="button" aria-label="Abrir notificações" aria-expanded="false">
+                        <img src="assets/images/sino.svg" alt="">
+                        <span id="notificacoes-contador" hidden></span>
+                    </button>
+                    <div id="painel-notificacoes" class="painel-notificacoes" hidden>
+                        <div class="notificacoes-cabecalho">
+                            <strong>Notificações</strong>
+                            <span id="notificacoes-total">0</span>
+                        </div>
+                        <div id="lista-notificacoes" class="lista-notificacoes">
+                            <p class="notificacoes-vazio">Carregando...</p>
+                        </div>
+                    </div>
+                </div>
                 <i class="fi fi-rr-settings" aria-label="Configurações"></i>
                 <div class="perfil">
                 </div>
@@ -116,9 +130,6 @@
                                     <p>Restante</p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="grafico">
-
                         </div>
                     </div>
                     <div class="demo-wrapper">
