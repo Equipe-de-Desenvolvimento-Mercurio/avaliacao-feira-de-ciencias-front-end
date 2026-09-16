@@ -7,7 +7,7 @@ Documentacao para consumo pelo frontend da API de avaliacao da Feira de Ciencias
 Servidor local:
 
 ```text
-http://localhost:3000
+https://avaliacao-feira-de-ciencias-api.onrender.com
 ```
 
 Rotas base:
@@ -239,7 +239,7 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
   #### Exemplo de requisicao
 
   ```http
-  GET http://localhost:3000/ranking/1
+  GET https://avaliacao-feira-de-ciencias-api.onrender.com/ranking/1
   Authorization: Bearer SEU_TOKEN
   ```
 
@@ -310,7 +310,7 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
   #### Exemplo de requisicao
 
   ```http
-  GET http://localhost:3000/ranking/1/6
+  GET https://avaliacao-feira-de-ciencias-api.onrender.com/ranking/1/6
   Authorization: Bearer SEU_TOKEN
   ```
 
@@ -395,7 +395,7 @@ Lista todos os projetos de um evento. A resposta inclui as informacoes do projet
 | `id_categoria` | inteiro | Filtra os projetos retornados por uma categoria especifica |
 
 ```http
-GET http://localhost:3000/project/1?id_categoria=6
+GET https://avaliacao-feira-de-ciencias-api.onrender.com/project/1?id_categoria=6
 ```
 
 #### Resposta `200`
@@ -701,7 +701,7 @@ A rota de exclusao de usuario usa a chave `erro` em alguns retornos:
 ## 10. Exemplo de cliente JavaScript
 
 ```js
-const API_URL = "http://localhost:3000";
+const API_URL = "https://avaliacao-feira-de-ciencias-api.onrender.com";
 
 async function apiFetch(path, options = {}) {
   const token = localStorage.getItem("token");
