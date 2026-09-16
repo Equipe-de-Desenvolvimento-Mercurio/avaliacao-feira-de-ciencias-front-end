@@ -17,6 +17,7 @@ Rotas base:
 | Autenticacao | `/auth` |
 | Eventos | `/event` |
 | Projetos | `/project` |
+| Categorias | `/categoria` |
 | Avaliacoes | `/review` |
 | Professores | `/teacher` |
 | Criterios | `/criterios` |
@@ -219,35 +220,15 @@ Retorna o painel consolidado do evento. Requer token de coordenador.
       "percentual_conclusao": "100.0",
       "concluido": true
     }
-  ],
-  "grafico": [
-    {
-      "data": "2026-09-15",
-      "avaliacoes": 8
-    }
-  ],
-  "atividades_recentes": [
-    {
-      "tipo": "avaliacao",
-      "mensagem": "Maria Silva avaliou Energia Sustentavel",
-      "data": "2026-09-15T13:00:00.000Z"
-    }
-  ],
-  "notificacoes": []
+  ]
 }
 ```
 
 Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
 
-O campo `grafico` agrupa a quantidade de avaliacoes por dia. A data usa o formato `YYYY-MM-DD`.
-
-O campo `atividades_recentes` lista as ultimas atividades do evento. Atualmente, cada item de avaliacao possui `tipo`, `mensagem` e `data`.
-
-O campo `notificacoes` lista as notificacoes do evento. Quando nao houver notificacoes, a API deve retornar um array vazio (`[]`).
-
   ### GET `/ranking/:id_evento`
 
-  Retorna o ranking de todos os projetos de um evento, ordenado pela maior media das notas. Requer token JWT, mas pode ser consultado por qualquer usuario autenticado.
+  Retorna o ranking dos projetos de um evento, **agrupado por categoria/area** (ex: Fund1, Ensino Medio, Tecnico em Quimica). Dentro de cada categoria, os projetos sao ordenados pela maior pontuacao total. Requer token JWT, mas pode ser consultado por qualquer usuario autenticado.
 
   #### Parametros
 
@@ -270,6 +251,81 @@ O campo `notificacoes` lista as notificacoes do evento. Quando nao houver notifi
       "id_evento": "1",
       "nome_evento": "Feira de Ciencias 2026"
     },
+    "categorias": [
+      {
+        "id_categoria": "6",
+        "nome_categoria": "Tecnico em Quimica",
+        "ranking": [
+          {
+            "colocacao": 1,
+            "id_projeto": "3",
+            "nome_projeto": "Energia Sustentavel",
+            "resumo": "Estudo sobre energia solar",
+            "estande": "12",
+            "nota_media": "342.0",
+            "total_avaliacoes": 4
+          }
+        ]
+      },
+      {
+        "id_categoria": "1",
+        "nome_categoria": "Fund1",
+        "ranking": [
+          {
+            "colocacao": 1,
+            "id_projeto": "1",
+            "nome_projeto": "Agua Limpa",
+            "resumo": "Sistema de filtragem de agua",
+            "estande": "8",
+            "nota_media": "237.0",
+            "total_avaliacoes": 3
+          }
+        ]
+      }
+    ]
+  }
+  ```
+
+  Todos os projetos do evento sao listados, inclusive os que ainda nao receberam avaliacao. Projetos sem avaliacao possuem `nota_media` igual a `0`. O valor de `nota_media` representa a soma das pontuacoes das avaliacoes. A `colocacao` e calculada separadamente dentro de cada categoria.
+
+  #### Resposta `404`
+
+  ```json
+  {
+    "error": "Evento não encontrado"
+  }
+  ```
+
+  ### GET `/ranking/:id_evento/:id_categoria`
+
+  Retorna o ranking apenas dos projetos de uma categoria/area especifica dentro do evento. Requer token JWT.
+
+  #### Parametros
+
+  | Parametro | Tipo | Descricao |
+  |---|---|---|
+  | `id_evento` | inteiro | ID do evento |
+  | `id_categoria` | inteiro | ID da categoria |
+
+  #### Exemplo de requisicao
+
+  ```http
+  GET http://localhost:3000/ranking/1/6
+  Authorization: Bearer SEU_TOKEN
+  ```
+
+  #### Resposta `200`
+
+  ```json
+  {
+    "evento": {
+      "id_evento": "1",
+      "nome_evento": "Feira de Ciencias 2026"
+    },
+    "categoria": {
+      "id_categoria": "6",
+      "nome_categoria": "Tecnico em Quimica"
+    },
     "ranking": [
       {
         "colocacao": 1,
@@ -277,29 +333,18 @@ O campo `notificacoes` lista as notificacoes do evento. Quando nao houver notifi
         "nome_projeto": "Energia Sustentavel",
         "resumo": "Estudo sobre energia solar",
         "estande": "12",
-        "nota_media": "85.5",
+        "nota_media": "342.0",
         "total_avaliacoes": 4
-      },
-      {
-        "colocacao": 2,
-        "id_projeto": "1",
-        "nome_projeto": "Agua Limpa",
-        "resumo": "Sistema de filtragem de agua",
-        "estande": "8",
-        "nota_media": "79.0",
-        "total_avaliacoes": 3
       }
     ]
   }
   ```
 
-  Todos os projetos do evento sao listados, inclusive os que ainda nao receberam avaliacao. Projetos sem avaliacao possuem `nota_media` igual a `0`. Em caso de empate, os projetos recebem a mesma `colocacao`.
-
   #### Resposta `404`
 
   ```json
   {
-    "error": "Evento não encontrado"
+    "error": "Categoria não encontrada"
   }
   ```
 
@@ -314,23 +359,44 @@ Cria um projeto. Requer token de coordenador.
 ```json
 {
   "id_evento": 1,
+  "id_categoria": 6,
   "nome_projeto": "Energia Sustentavel",
   "resumo": "Estudo sobre energia solar",
   "estande": "12"
 }
 ```
 
+`id_categoria` e obrigatorio e precisa ser o ID de uma categoria existente (ver secao [Categorias](#5-categorias)).
+
 #### Resposta `200`
 
 ```json
 {
-  "message": "Projeto criado com sucesso!!"
+    "message": "Projeto criado com sucesso!!"
+    }
+```
+
+#### Resposta `404`
+
+```json
+{
+  "error": "Categoria não encontrada"
 }
 ```
 
 ### GET `/project/:id_evento`
 
-Lista todos os projetos de um evento. A resposta inclui as informacoes do projeto, totais e avaliacoes.
+Lista todos os projetos de um evento. A resposta inclui as informacoes do projeto, a categoria, totais e avaliacoes.
+
+#### Query params (opcional)
+
+| Parametro | Tipo | Descricao |
+|---|---|---|
+| `id_categoria` | inteiro | Filtra os projetos retornados por uma categoria especifica |
+
+```http
+GET http://localhost:3000/project/1?id_categoria=6
+```
 
 #### Resposta `200`
 
@@ -339,6 +405,8 @@ Lista todos os projetos de um evento. A resposta inclui as informacoes do projet
   {
     "id_projeto": "1",
     "id_evento": "1",
+    "id_categoria": "6",
+    "nome_categoria": "Tecnico em Quimica",
     "nome_projeto": "Energia Sustentavel",
     "resumo": "Estudo sobre energia solar",
     "estande": "12",
@@ -367,7 +435,7 @@ Lista todos os projetos de um evento. A resposta inclui as informacoes do projet
 
 ### GET `/project/id/:id_projeto`
 
-Busca um projeto especifico pelo ID. A resposta tem o mesmo formato de um item da listagem anterior.
+Busca um projeto especifico pelo ID. A resposta tem o mesmo formato de um item da listagem anterior, incluindo `id_categoria` e `nome_categoria`.
 
 ### GET `/project/:id_evento/:id_usuario/evaluated`
 
@@ -379,7 +447,74 @@ Lista os projetos do evento que ainda nao foram avaliados pelo usuario autentica
 
 Nas duas rotas, `:id_usuario` deve ser o mesmo ID do token.
 
-## 5. Avaliacoes
+## 5. Categorias
+
+Categorias representam a area/nivel estudantil do projeto (ex: `Fund1`, `Fund2`, `Ensino Médio`, `Técnico em Informática`, `Técnico em Administração`, `Técnico em Química`, `Técnico em Radiologia`, `Técnico em Enfermagem`). Essas oito categorias ja vem cadastradas por padrao no banco.
+
+### POST `/categoria`
+
+Cria uma nova categoria. Requer token de coordenador.
+
+#### Body
+
+```json
+{
+  "nome_categoria": "Tecnico em Quimica",
+  "descricao": "Projetos do curso tecnico em Quimica"
+}
+```
+
+`descricao` e opcional.
+
+#### Resposta `200`
+
+```json
+{
+  "message": "Categoria criada com sucesso!!"
+}
+```
+
+### GET `/categoria`
+
+Lista todas as categorias cadastradas, ordenadas por nome.
+
+#### Resposta `200`
+
+```json
+[
+  {
+    "id_categoria": "1",
+    "nome_categoria": "Fund1",
+    "descricao": null,
+    "data_criacao": "2026-09-10T12:00:00.000Z"
+  }
+]
+```
+
+### GET `/categoria/:id_categoria`
+
+Busca uma categoria especifica pelo ID.
+
+#### Resposta `200`
+
+```json
+{
+  "id_categoria": "6",
+  "nome_categoria": "Tecnico em Quimica",
+  "descricao": null,
+  "data_criacao": "2026-09-10T12:00:00.000Z"
+}
+```
+
+#### Resposta `404`
+
+```json
+{
+  "error": "Categoria não encontrada"
+}
+```
+
+## 6. Avaliacoes
 
 ### POST `/review`
 
@@ -440,7 +575,7 @@ Exemplo para um avaliador tecnico:
 
 Uma avaliacao por professor e permitida para cada projeto.
 
-## 6. Professores
+## 7. Professores
 
 ### GET `/teacher/evento/:id_evento`
 
@@ -511,7 +646,7 @@ Retorna o painel de avaliacao de um professor no evento. Requer que o professor 
 }
 ```
 
-## 7. Criterios
+## 8. Criterios
 
 ### GET `/criterios/:id_usuario`
 
@@ -534,7 +669,7 @@ O ID da URL deve ser o mesmo ID do token.
 ]
 ```
 
-## 8. Codigos de resposta
+## 9. Codigos de resposta
 
 | Codigo | Uso |
 |---:|---|
@@ -563,7 +698,7 @@ A rota de exclusao de usuario usa a chave `erro` em alguns retornos:
 }
 ```
 
-## 9. Exemplo de cliente JavaScript
+## 10. Exemplo de cliente JavaScript
 
 ```js
 const API_URL = "http://localhost:3000";
@@ -601,10 +736,13 @@ async function fazerLogin(email, senha) {
 }
 ```
 
-## 10. Pontos de atencao para o frontend
+## 11. Pontos de atencao para o frontend
 
 - Salve o `token` recebido no login e envie-o como `Bearer`.
 - Nao envie `id_avaliador` ao registrar avaliacao.
+- Ao criar um projeto, envie `id_categoria` junto com `id_evento`.
+- Para montar formularios de cadastro de projeto, use `GET /categoria` para listar as opcoes de categoria.
+- O ranking (`GET /ranking/:id_evento`) agora retorna um array `categorias`, cada uma com seu proprio `ranking` interno — nao existe mais um unico array `ranking` plano para o evento inteiro.
 - Para professor, use `GET /project/:id_evento/:id_usuario/not_evaluated` para montar a fila de avaliacao.
 - Depois de enviar uma avaliacao, atualize a fila ou recarregue o projeto.
 - Use o dashboard para a tela do coordenador.

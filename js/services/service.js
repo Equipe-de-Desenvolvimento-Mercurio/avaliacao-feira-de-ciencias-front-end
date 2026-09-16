@@ -104,6 +104,9 @@
 		ranking: {
 			list: function (eventId) { return request("/ranking/" + pathId(eventId)); }
 		},
+		categories: {
+			list: function () { return request("/categoria"); }
+		},
 		projects: {
 			list: function (eventId) { return request("/project/" + pathId(eventId)); },
 			get: function (id) { return request("/project/id/" + pathId(id)); },

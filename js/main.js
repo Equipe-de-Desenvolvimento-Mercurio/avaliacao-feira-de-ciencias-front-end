@@ -89,6 +89,22 @@
         }).catch(showError);
     }
 
+    function loadProjectCategoryOptions() {
+        var select = document.querySelector("#categoria-projeto");
+        if (!select || !api || !api.isConfigured()) return;
+
+        api.categories.list().then(function (response) {
+            var categories = Array.isArray(response) ? response : (response && response.data) || [];
+            select.innerHTML = "<option value=\"\">Selecione a categoria</option>";
+            categories.forEach(function (category) {
+                var option = document.createElement("option");
+                option.value = category.id_categoria;
+                option.textContent = category.nome_categoria;
+                select.appendChild(option);
+            });
+        }).catch(showError);
+    }
+
     function loadProfessorEventOptions() {
         var container = document.querySelector("#professor-eventos");
         var user = currentUser();
@@ -221,8 +237,9 @@
             return;
         }
 
-        api.professors.list(eventId).then(function (response) {
-            var professors = normalizeEvents(response);
+        Promise.all([api.professors.list(eventId), api.projects.list(eventId)]).then(function (responses) {
+            var professors = normalizeEvents(responses[0]);
+            var projects = normalizeEvents(responses[1]);
             select.innerHTML = "<option value=\"\">Selecione um professor</option>";
             professors.forEach(function (professor) {
                 var option = document.createElement("option");
@@ -235,50 +252,156 @@
             var selectedId = params.get("id_usuario") || window.sessionStorage.getItem("sic_monitor_professor");
             if (selectedId && professors.some(function (professor) { return String(professor.id_usuario) === String(selectedId); })) {
                 select.value = selectedId;
-                loadProfessorPanel(eventId, selectedId);
             }
+            return loadMonitoringCriteria(professors, select.value).then(function (criteriaByType) {
+                renderMonitoring(eventId, professors, projects, select.value, criteriaByType);
+            });
         }).catch(showError);
 
         select.addEventListener("change", function () {
-            if (!select.value) return;
-            window.sessionStorage.setItem("sic_monitor_professor", select.value);
-            window.history.replaceState({}, "", "monitoramento-de-professores.html?id_usuario=" + encodeURIComponent(select.value));
-            loadProfessorPanel(eventId, select.value);
+            var selectedId = select.value;
+            if (selectedId) {
+                window.sessionStorage.setItem("sic_monitor_professor", selectedId);
+                window.history.replaceState({}, "", "monitoramento-de-professores.html?id_usuario=" + encodeURIComponent(selectedId));
+            } else {
+                window.sessionStorage.removeItem("sic_monitor_professor");
+                window.history.replaceState({}, "", "monitoramento-de-professores.html");
+            }
+            Promise.all([api.professors.list(eventId), api.projects.list(eventId)]).then(function (responses) {
+                var professors = normalizeEvents(responses[0]);
+                return loadMonitoringCriteria(professors, selectedId).then(function (criteriaByType) {
+                    renderMonitoring(eventId, professors, normalizeEvents(responses[1]), selectedId, criteriaByType);
+                });
+            }).catch(showError);
         });
     }
 
-    function loadProfessorPanel(eventId, professorId) {
-        api.professors.panel(eventId, professorId).then(function (panel) {
-            var userData = panel.usuario || {};
-            var eventData = panel.evento || {};
-            var summary = panel.resumo || {};
-            var projects = (panel.projetos || []).filter(function (project) { return project.avaliado; });
-            document.querySelector("#monitor-nome").textContent = userData.nome_usuario || "Sem nome";
-            document.querySelector("#monitor-tipo").textContent = "Professor vinculado ao evento";
-            document.querySelector("#monitor-avaliador").textContent = userData.tipo_avaliador || "Não informado";
-            document.querySelector("#monitor-email").textContent = userData.email || "Sem e-mail";
-            document.querySelector("#monitor-id").textContent = userData.id_usuario || professorId;
-            document.querySelector("#monitor-evento").textContent = eventData.nome_evento || "Evento selecionado";
-            document.querySelector("#monitor-total-projetos").textContent = projects.length;
-            document.querySelector("#monitor-pontuacao").textContent = summary.pontuacao_total || "0";
+    function loadMonitoringCriteria(professors, selectedProfessorId) {
+        var professorByType = {};
+        professors.forEach(function (professor) {
+            var type = String(professor.tipo_avaliador || "").toLowerCase();
+            if (type && (!professorByType[type] || String(professor.id_usuario) === String(selectedProfessorId))) {
+                professorByType[type] = professor;
+            }
+        });
+        var criteriaByType = {};
+        return Promise.all(Object.keys(professorByType).map(function (type) {
+            return api.criteria.list(professorByType[type].id_usuario).then(function (response) {
+                var criteria = Array.isArray(response) ? response : (response && response.data) || [];
+                criteriaByType[type] = criteria
+                    .filter(function (criterion) {
+                        return String(criterion.tipo_avaliador || type).toLowerCase() === type;
+                    })
+                    .sort(function (first, second) {
+                        return Number(first.numero_criterio) - Number(second.numero_criterio);
+                    });
+            }).catch(function (error) {
+                criteriaByType[type] = [];
+                if (selectedProfessorId && String(professorByType[type].id_usuario) === String(selectedProfessorId)) {
+                    throw error;
+                }
+            });
+        })).then(function () {
+            return criteriaByType;
+        });
+    }
 
-            var list = document.querySelector("#monitor-projetos");
-            list.innerHTML = "";
-            if (!projects.length) {
-                list.innerHTML = "<p class=\"api-empty\">Este professor ainda não avaliou projetos neste evento.</p>";
+    function renderMonitoring(eventId, professors, projects, selectedProfessorId, criteriaByType) {
+        var professorById = {};
+        professors.forEach(function (professor) {
+            professorById[String(professor.id_usuario)] = professor;
+        });
+
+        var selectedProfessor = selectedProfessorId && professorById[String(selectedProfessorId)];
+        var evaluations = [];
+        projects.forEach(function (project) {
+            (project.avaliacoes || []).forEach(function (evaluation) {
+                if (!selectedProfessorId || String(evaluation.id_avaliador) === String(selectedProfessorId)) {
+                    var evaluator = professorById[String(evaluation.id_avaliador)] || {};
+                    evaluations.push({
+                        project: project,
+                        evaluation: evaluation,
+                        evaluator: evaluator,
+                        type: String(evaluator.tipo_avaliador || "não informado").toLowerCase()
+                    });
+                }
+            });
+        });
+
+        var profile = selectedProfessor || {};
+        document.querySelector("#monitor-nome").textContent = selectedProfessor ? profile.nome_usuario || "Sem nome" : "Todos os professores";
+        document.querySelector("#monitor-tipo").textContent = selectedProfessor ? "Professor vinculado ao evento" : "Visão consolidada do evento";
+        document.querySelector("#monitor-avaliador").textContent = selectedProfessor ? profile.tipo_avaliador || "Não informado" : "Todos os avaliadores";
+        document.querySelector("#monitor-email").textContent = selectedProfessor ? profile.email || "Sem e-mail" : "Todas as avaliações";
+        document.querySelector("#monitor-id").textContent = selectedProfessor ? profile.id_usuario : "-";
+        document.querySelector("#monitor-evento").textContent = "Evento " + eventId;
+        document.querySelector("#monitor-total-projetos").textContent = evaluations.length;
+        document.querySelector("#monitor-pontuacao").textContent = evaluations.reduce(function (total, item) {
+            return total + (Number(item.evaluation.pontuacao_total) || 0);
+        }, 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+
+        var list = document.querySelector("#monitor-projetos");
+        list.innerHTML = "";
+        if (!evaluations.length) {
+            list.innerHTML = "<p class=\"api-empty\">Nenhuma avaliação encontrada neste evento.</p>";
+            return;
+        }
+        var groupedEvaluations = {};
+        evaluations.forEach(function (item) {
+            if (!groupedEvaluations[item.type]) groupedEvaluations[item.type] = [];
+            groupedEvaluations[item.type].push(item);
+        });
+        Object.keys(groupedEvaluations).sort().forEach(function (type) {
+            var group = document.createElement("section");
+            group.className = "monitor-grupo";
+            var title = document.createElement("h4");
+            title.className = "monitor-grupo-titulo";
+            title.textContent = type === "artistico" ? "Avaliações artísticas" : type === "tecnico" ? "Avaliações técnicas" : "Avaliações - " + type;
+            group.appendChild(title);
+
+            var criteria = (criteriaByType && criteriaByType[type]) || [];
+            if (!criteria.length) {
+                var unavailable = document.createElement("p");
+                unavailable.className = "api-empty";
+                unavailable.textContent = "Nenhum critério retornado para este tipo de avaliador.";
+                group.appendChild(unavailable);
+                list.appendChild(group);
                 return;
             }
-            projects.forEach(function (project) {
+            var criterionNames = criteria.map(function (criterion) {
+                return criterion.nome_criterio;
+            });
+            group.style.setProperty("--monitor-criterion-count", criterionNames.length);
+            var header = document.createElement("div");
+            header.className = "monitor-cabecalho";
+            ["Projeto", "Categoria", "Avaliador"].concat(criterionNames, ["Total"]).forEach(function (label) {
+                var cell = document.createElement("span");
+                cell.textContent = label;
+                header.appendChild(cell);
+            });
+            group.appendChild(header);
+
+            groupedEvaluations[type].forEach(function (item) {
+                var project = item.project;
+                var evaluation = item.evaluation;
                 var row = document.createElement("div");
                 row.className = "lista1";
-                row.innerHTML = "<h5></h5><span></span><p>Avaliado</p><span></span>";
+                row.title = evaluation.comentario || "Sem comentário";
+                row.innerHTML = "<h5></h5><span></span><span></span>" +
+                    criteria.map(function () { return "<span></span>"; }).join("") +
+                    "<strong></strong>";
                 row.querySelector("h5").textContent = project.nome_projeto || "Sem nome";
-                row.querySelector("h5").title = "Estande: " + (project.estande || "-");
-                row.querySelector("span").textContent = "Estande " + (project.estande || "-");
-                row.querySelectorAll("span")[1].textContent = project.avaliacao && project.avaliacao.pontuacao_total || "-";
-                list.appendChild(row);
+                row.querySelector("h5").title = evaluation.comentario || "Sem comentário";
+                row.querySelectorAll("span")[0].textContent = project.nome_categoria || "Sem categoria";
+                row.querySelectorAll("span")[1].textContent = item.evaluator.nome_usuario || ("ID " + (evaluation.id_avaliador || "-"));
+                criteria.forEach(function (criterion, index) {
+                    row.querySelectorAll("span")[index + 2].textContent = evaluation["nota" + (index + 1)] || "-";
+                });
+                row.querySelector("strong").textContent = evaluation.pontuacao_total || "0";
+                group.appendChild(row);
             });
-        }).catch(showError);
+            list.appendChild(group);
+        });
     }
 
     function setupEvaluatorFilters(evaluators, list) {
@@ -472,6 +595,7 @@
             "escolher-evento.html",
             "projetos-avaliar.html",
             "formulario.html",
+            "minhas-avaliacoes.html",
             "avaliacao-enviada.html"
         ];
         var coordinatorPages = [
@@ -514,8 +638,24 @@
             event = firstEvent(event);
             if (!event || !event.id_evento) throw new Error("Nenhum evento vinculado ao usuário.");
             window.localStorage.setItem("sic_current_event", event.id_evento);
-            return api.projects.listNotEvaluated(event.id_evento, userId(user));
-        }).then(renderProfessorProjects).catch(showError);
+            return Promise.all([
+                api.projects.listEvaluated(event.id_evento, userId(user)),
+                api.projects.listNotEvaluated(event.id_evento, userId(user))
+            ]);
+        }).then(function (responses) {
+            var projectsById = {};
+            responses.forEach(function (response, index) {
+                normalizeEvents(response).forEach(function (project) {
+                    var key = String(project.id_projeto);
+                    project.avaliado = index === 0;
+                    projectsById[key] = Object.assign(projectsById[key] || {}, project);
+                    if (index === 0) projectsById[key].avaliado = true;
+                });
+            });
+            renderProfessorProjects(Object.keys(projectsById).map(function (key) {
+                return projectsById[key];
+            }));
+        }).catch(showError);
     }
 
         function loadProfessorHome() {
@@ -545,26 +685,199 @@
     function renderProfessorProjects(projects) {
         var main = document.querySelector(".projetos-lista-api");
         if (!main) return;
+        var search = document.querySelector("#barra-pesquisa");
+        var categoryButtons = document.querySelectorAll(".categorias > button");
+        var activeFilter = "todos";
+        var categoryOf = function (project) {
+            return project.nome_categoria || project.categoria || "Sem categoria";
+        };
+
+        function render() {
+            var term = String(search && search.value || "").toLowerCase().trim();
+            var filtered = projects.filter(function (project) {
+                var category = categoryOf(project).toLowerCase();
+                var statusMatches = activeFilter === "todos" ||
+                    (activeFilter === "pendentes" && !project.avaliado) ||
+                    (activeFilter === "avaliados" && project.avaliado);
+                var textMatches = !term || String(project.nome_projeto || "").toLowerCase().indexOf(term) !== -1 ||
+                    category.indexOf(term) !== -1;
+                return statusMatches && textMatches;
+            });
+            renderProjectCards(main, filtered, categoryOf);
+        }
+
+        var categoryContainer = document.querySelector(".categorias");
+        if (categoryContainer) {
+            categoryContainer.innerHTML = "";
+            ["Todos", "Pendentes", "Avaliados"].forEach(function (label, index) {
+                var button = document.createElement("button");
+                button.type = "button";
+                button.textContent = label;
+                button.dataset.filter = label.toLowerCase();
+                if (index === 0) button.id = "select";
+                button.addEventListener("click", function () {
+                    activeFilter = button.dataset.filter;
+                    categoryContainer.querySelectorAll("button").forEach(function (item) {
+                        item.removeAttribute("id");
+                    });
+                    button.id = "select";
+                    render();
+                });
+                categoryContainer.appendChild(button);
+            });
+        }
+        if (search) search.addEventListener("input", render);
+        render();
+    }
+
+    function renderProjectCards(main, projects, categoryOf) {
         main.innerHTML = "";
         if (!projects || !projects.length) {
-            main.innerHTML = "<p class=\"api-empty\">Nenhum projeto pendente para avaliação.</p>";
+            main.innerHTML = "<p class=\"api-empty\">Nenhum projeto encontrado para este filtro.</p>";
             return;
         }
         projects.forEach(function (project) {
             var article = document.createElement("div");
-            article.className = "projeto-braço";
-            article.innerHTML = "<p class=\"materia\">Projeto</p>" +
-                "<p class=\"status\">Pendente</p>" +
+            article.className = project.avaliado ? "projeto-planta" : "projeto-braço";
+            article.innerHTML = "<p class=\"materia\"></p>" +
+                "<p class=\"status\"></p>" +
                 "<h3></h3><p class=\"resumo-api\"></p>" +
-                "<div class=\"avaliar\"><button type=\"button\"><i class=\"fa-solid fa-list\"></i><span>Avaliar</span></button></div>";
+                "<div class=\"avaliar\"><button type=\"button\"></button></div>";
+            article.querySelector(".materia").textContent = categoryOf(project);
+            article.querySelector(".status").textContent = project.avaliado ? "Avaliado" : "Pendente";
             article.querySelector("h3").textContent = project.nome_projeto;
             article.querySelector(".resumo-api").textContent = project.resumo || "";
-            article.querySelector("button").addEventListener("click", function () {
-                window.localStorage.setItem("sic_current_project", project.id_projeto);
-                window.location.href = "formulario.html";
-            });
+            var button = article.querySelector("button");
+            button.innerHTML = project.avaliado ? "<i class=\"fa-regular fa-eye\"></i><span>Visualizar</span>" : "<i class=\"fa-solid fa-list\"></i><span>Avaliar</span>";
+            if (!project.avaliado) button.addEventListener("click", function () {
+                    window.localStorage.setItem("sic_current_project", project.id_projeto);
+                    window.location.href = "formulario.html";
+                });
             main.appendChild(article);
         });
+    }
+
+    function loadMyEvaluations() {
+        var page = document.querySelector("#minhas-avaliacoes");
+        var user = currentUser();
+        if (!page || !user || !api || !api.isConfigured()) return;
+
+        var eventId = getEventId();
+        if (!eventId) {
+            document.querySelector("#minhas-lista").innerHTML = "<p class=\"api-empty\">Selecione um evento para consultar suas avaliacoes.</p>";
+            return;
+        }
+
+        Promise.all([
+            api.professors.panel(eventId, userId(user)),
+            api.criteria.list(userId(user))
+        ]).then(function (responses) {
+            var panel = responses[0] || {};
+            var criteriaResponse = responses[1];
+            var criteria = Array.isArray(criteriaResponse) ? criteriaResponse : (criteriaResponse && criteriaResponse.data) || [];
+            criteria.sort(function (first, second) {
+                return Number(first.numero_criterio) - Number(second.numero_criterio);
+            });
+            renderMyEvaluations(panel, criteria);
+        }).catch(showError);
+    }
+
+    function renderMyEvaluations(panel, criteria) {
+        var projects = (panel.projetos || []).filter(function (project) {
+            return project.avaliado && project.avaliacao;
+        });
+        var list = document.querySelector("#minhas-lista");
+        var total = document.querySelector("#minhas-total");
+        var score = document.querySelector("#minhas-pontuacao");
+        if (total) total.textContent = projects.length;
+        if (score) score.textContent = projects.reduce(function (sum, project) {
+            return sum + (Number(project.avaliacao.pontuacao_total) || 0);
+        }, 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+        if (!list) return;
+        list.innerHTML = "";
+        if (!projects.length) {
+            list.innerHTML = "<p class=\"api-empty\">Voce ainda nao avaliou nenhum projeto.</p>";
+            return;
+        }
+        projects.forEach(function (project) {
+            var evaluation = project.avaliacao;
+            var card = document.createElement("article");
+            card.className = "avaliacao-card";
+            card.innerHTML = "<h3></h3><p class=\"avaliacao-meta\"></p><div class=\"notas-avaliacao\"></div>" +
+                "<div class=\"avaliacao-total\"><span>Pontuacao total</span><strong></strong></div>" +
+                "<p class=\"avaliacao-comentario\"></p>";
+            card.querySelector("h3").textContent = project.nome_projeto || "Projeto sem nome";
+            card.querySelector(".avaliacao-meta").textContent = (project.nome_categoria || "Sem categoria") + " - Estande " + (project.estande || "-");
+            card.querySelector(".avaliacao-total strong").textContent = evaluation.pontuacao_total || "0";
+            card.querySelector(".avaliacao-comentario").textContent = evaluation.comentario ? "Comentario: " + evaluation.comentario : "Sem comentario informado.";
+            var notes = card.querySelector(".notas-avaliacao");
+            criteria.forEach(function (criterion, index) {
+                var item = document.createElement("div");
+                item.className = "nota-criterio";
+                item.innerHTML = "<span></span><strong></strong>";
+                item.querySelector("span").textContent = criterion.nome_criterio || "Criterio " + (index + 1);
+                item.querySelector("strong").textContent = evaluation["nota" + (index + 1)] || "0";
+                notes.appendChild(item);
+            });
+            list.appendChild(card);
+        });
+    }
+
+    function loadEvaluationForm() {
+        var form = document.querySelector("body.app-mobile main");
+        var user = currentUser();
+        if (!form || !form.querySelector(".caixa") || !user || !api || !api.isConfigured()) return;
+
+        var projectId = window.localStorage.getItem("sic_current_project") || form.dataset.projectId;
+        var criteriaRequest = api.criteria.list(userId(user));
+        var projectRequest = projectId ? api.projects.get(projectId) : Promise.resolve(null);
+
+        Promise.all([criteriaRequest, projectRequest]).then(function (responses) {
+            var criteriaResponse = responses[0];
+            var criteria = Array.isArray(criteriaResponse) ? criteriaResponse : (criteriaResponse && criteriaResponse.data) || [];
+            criteria.sort(function (first, second) {
+                return Number(first.numero_criterio) - Number(second.numero_criterio);
+            });
+            renderEvaluationCriteria(form, criteria);
+
+            var project = responses[1];
+            if (project && project.nome_projeto) {
+                var projectTitle = form.querySelector(".texto-inicial h2");
+                if (projectTitle) projectTitle.textContent = project.nome_projeto;
+                form.dataset.projectId = project.id_projeto || projectId;
+            }
+        }).catch(function (error) {
+            renderEvaluationCriteria(form, []);
+            var submitButton = form.querySelector(".enviar button");
+            if (submitButton) submitButton.disabled = true;
+            showError(error);
+        });
+    }
+
+    function renderEvaluationCriteria(form, criteria) {
+        var boxes = form.querySelectorAll(".caixa");
+        boxes.forEach(function (box, index) {
+            var criterion = criteria[index];
+            box.hidden = !criterion;
+            if (!criterion) return;
+            var title = box.querySelector("h2");
+            var description = box.querySelector("p");
+            var inputs = box.querySelectorAll('input[type="radio"]');
+            var criterionNumber = index + 1;
+            if (title) title.textContent = criterion.nome_criterio;
+            if (description) description.textContent = criterion.descricao || "";
+
+            inputs.forEach(function (input) {
+                var suffix = input.value.replace(".", "");
+                var inputId = "nota" + criterionNumber + "-" + suffix;
+                var oldInputId = input.id;
+                input.name = "nota" + criterionNumber;
+                input.id = inputId;
+                var label = box.querySelector('label[for="' + oldInputId + '"]');
+                if (label) label.htmlFor = inputId;
+            });
+        });
+        form.dataset.criterionCount = Math.min(criteria.length, boxes.length);
     }
 
     function loadCoordinatorDashboard() {
@@ -592,8 +905,14 @@
             cards.forEach(function (card, index) {
                 card.textContent = cardValues[index];
             });
-            document.querySelectorAll("#secao-dashboard .projetos .card .number > p").forEach(function (label) {
-                label.textContent = hasProjects ? "Dados atualizados pela API" : "Nenhum dado encontrado";
+            var descriptions = [
+                "Projetos cadastrados no evento",
+                "Avaliações registradas pelos professores",
+                "Projetos que já receberam todas as avaliações",
+                "Projetos que ainda aguardam avaliações"
+            ];
+            document.querySelectorAll("#secao-dashboard .projetos .card .number > p").forEach(function (label, index) {
+                label.textContent = hasProjects ? descriptions[index] : "Nenhum projeto cadastrado no evento";
             });
             var percentage = document.querySelector("#secao-dashboard .porcentagem h3");
             if (percentage) percentage.textContent = hasProjects ? (summary.percentual_conclusao || 0) + "%" : "--";
@@ -714,6 +1033,9 @@
         if (!ranking || !user || !api || !api.isConfigured()) return;
 
         var eventSelect = document.querySelector("#evento-ranking");
+        var categorySelect = document.querySelector("#categoria-ranking");
+        var csvButton = document.querySelector("#csv");
+        var currentRankingData = null;
         var eventId = getEventId();
         var eventsRequest = api.events.listByUser(userId(user)).then(function (response) {
             var events = normalizeEvents(response);
@@ -735,22 +1057,111 @@
             window.localStorage.setItem("sic_current_event", selectedEventId);
             if (eventSelect) eventSelect.value = selectedEventId;
             return api.ranking.list(selectedEventId);
-        }).then(renderRanking).catch(showError);
+        }).then(function (data) {
+            currentRankingData = data;
+            renderRanking(data);
+        }).catch(showError);
 
         if (eventSelect) {
             eventSelect.addEventListener("change", function () {
                 if (!eventSelect.value) return;
                 window.localStorage.setItem("sic_current_event", eventSelect.value);
-                api.ranking.list(eventSelect.value).then(renderRanking).catch(showError);
+                api.ranking.list(eventSelect.value).then(function (data) {
+                    currentRankingData = data;
+                    renderRanking(data);
+                }).catch(showError);
+            });
+        }
+        if (categorySelect) {
+            categorySelect.addEventListener("change", function () {
+                if (!currentRankingData) return;
+                window.localStorage.setItem("sic_current_category", categorySelect.value);
+                renderRanking(currentRankingData);
+            });
+        }
+        if (csvButton) {
+            csvButton.addEventListener("click", function () {
+                if (!currentRankingData) {
+                    window.alert("Aguarde o ranking carregar para exportar.");
+                    return;
+                }
+                exportRankingCsv(currentRankingData);
             });
         }
     }
 
+    function exportRankingCsv(data) {
+        var categories = Array.isArray(data.categorias) ? data.categorias : [];
+        var selectedCategoryId = window.localStorage.getItem("sic_current_category");
+        var category = categories.find(function (item) {
+            return String(item.id_categoria) === String(selectedCategoryId);
+        }) || categories[0];
+        var projects = category && Array.isArray(category.ranking) ? category.ranking : (Array.isArray(data.ranking) ? data.ranking : []);
+        var eventName = data.evento && data.evento.nome_evento || "Evento";
+        var categoryName = category && category.nome_categoria || "Todas as categorias";
+        var rows = [
+            ["Evento", eventName],
+            ["Categoria", categoryName],
+            [],
+            ["Posição", "Projeto", "Resumo", "Estande", "Pontuação final", "Avaliações", "Status"]
+        ];
+        projects.forEach(function (project) {
+            var evaluated = Number(project.total_avaliacoes) > 0;
+            rows.push([
+                project.colocacao || "-",
+                project.nome_projeto || "Projeto sem nome",
+                project.resumo || "Sem resumo informado",
+                project.estande || "-",
+                project.nota_media || 0,
+                project.total_avaliacoes || 0,
+                evaluated ? "Avaliado" : "Pendente"
+            ]);
+        });
+
+        var csv = "\uFEFF" + rows.map(function (row) {
+            return row.map(function (value) {
+                return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
+            }).join(";");
+        }).join("\r\n");
+        var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        var filename = (eventName + "-" + categoryName).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        link.href = url;
+        link.download = "ranking-" + (filename || "evento") + ".csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    }
+
     function renderRanking(data) {
-        var projects = Array.isArray(data.ranking) ? data.ranking : [];
+        var categories = Array.isArray(data.categorias) ? data.categorias : [];
+        var categorySelect = document.querySelector("#categoria-ranking");
+        var selectedCategoryId = window.localStorage.getItem("sic_current_category");
+        var selectedCategory = categories.find(function (category) {
+            return String(category.id_categoria) === String(selectedCategoryId);
+        }) || categories[0];
+        if (categorySelect) {
+            categorySelect.innerHTML = "";
+            categories.forEach(function (category) {
+                var option = document.createElement("option");
+                option.value = category.id_categoria;
+                option.textContent = category.nome_categoria || "Categoria";
+                categorySelect.appendChild(option);
+            });
+            categorySelect.disabled = !categories.length;
+            if (selectedCategory) {
+                categorySelect.value = selectedCategory.id_categoria;
+                window.localStorage.setItem("sic_current_category", selectedCategory.id_categoria);
+            }
+        }
+        var projects = selectedCategory && Array.isArray(selectedCategory.ranking) ? selectedCategory.ranking : [];
+        if (!categories.length && Array.isArray(data.ranking)) projects = data.ranking;
         var eventName = data.evento && data.evento.nome_evento;
         var subtitle = document.querySelector(".ranking > .title .text p");
-        if (subtitle) subtitle.textContent = eventName ? "Ranking dos projetos do evento " + eventName + "." : "Ranking dos projetos do evento selecionado.";
+        var categoryName = selectedCategory && selectedCategory.nome_categoria;
+        if (subtitle) subtitle.textContent = eventName ? "Ranking de " + (categoryName || "todos os projetos") + " no evento " + eventName + "." : "Ranking da categoria selecionada.";
 
         var cards = document.querySelectorAll(".ranking > .top > .card");
         var podiumOrder = [1, 0, 2];
@@ -835,8 +1246,10 @@
         var destination = routeFor(control.textContent);
         if (!destination) return;
 
-        if (control.closest("footer") && (control.classList.contains("projetos") || control.classList.contains("avaliaçoes"))) {
+        if (control.closest("footer") && control.classList.contains("projetos")) {
             destination = "projetos-avaliar.html";
+        } else if (control.closest("footer") && control.classList.contains("avaliaçoes")) {
+            destination = "minhas-avaliacoes.html";
         }
 
         control.type = "button";
@@ -870,6 +1283,7 @@
 
     if (document.querySelector("#eventos-disponiveis")) loadEventSelection();
     if (document.querySelector("#evento-projeto")) loadProjectEventOptions();
+    if (document.querySelector("#categoria-projeto")) loadProjectCategoryOptions();
     if (document.querySelector("#professor-eventos")) loadProfessorEventOptions();
     if (document.querySelector("#evento-coordenador")) loadCoordinatorEventSelector();
     if (document.querySelector("#lista-professores-api")) loadCoordinatorProfessors();
@@ -877,6 +1291,8 @@
     if (document.querySelector("#monitor-professor")) loadProfessorMonitoring();
     if (document.querySelector("#lista-projetos-api")) loadCoordinatorProjects();
     if (document.querySelector(".projetos-lista-api")) loadProfessorProjects();
+    if (document.querySelector("#minhas-avaliacoes")) loadMyEvaluations();
+    if (document.querySelector("body.app-mobile main")) loadEvaluationForm();
     if (document.querySelector(".ranking")) loadRanking();
     setupNotifications();
     loadProfessorHome();
@@ -886,17 +1302,19 @@
     if (saveProjectButton && api && api.isConfigured()) {
         saveProjectButton.addEventListener("click", function () {
             var eventId = document.querySelector("#evento-projeto").value;
+            var categoryId = document.querySelector("#categoria-projeto").value;
             var name = document.querySelector("#nome-projeto").value.trim();
             var summary = document.querySelector("#resumo-projeto").value.trim();
             var stand = document.querySelector("#estande-projeto").value.trim();
-            if (!eventId || !name || !summary || !stand) {
-                window.alert("Informe o evento, o nome, o resumo e o estande do projeto.");
+            if (!eventId || !categoryId || !name || !summary || !stand) {
+                window.alert("Informe o evento, a categoria, o nome, o resumo e o estande do projeto.");
                 return;
             }
             window.localStorage.setItem("sic_current_event", eventId);
             saveProjectButton.disabled = true;
             api.projects.create({
                 id_evento: Number(eventId),
+                id_categoria: Number(categoryId),
                 nome_projeto: name,
                 resumo: summary,
                 estande: stand
@@ -950,10 +1368,12 @@
                     scores[input.name] = Number(input.value);
                 });
 
-                if (["criatividade", "metodologia", "relevancia", "apresentacao", "nota5", "nota6"].some(function (criterion) {
+                var criterionNames = ["nota1", "nota2", "nota3", "nota4", "nota5", "nota6"];
+                var loadedCriterionCount = Math.min(Number(form.dataset.criterionCount) || 0, criterionNames.length);
+                if (criterionNames.slice(0, loadedCriterionCount).some(function (criterion) {
                     return typeof scores[criterion] !== "number";
                 })) {
-                    window.alert("Selecione uma nota para todos os critérios.");
+                    window.alert("Selecione uma nota para todos os critérios exibidos.");
                     return;
                 }
 
@@ -966,7 +1386,10 @@
                 control.disabled = true;
                 window.SICApi.evaluations.submit({
                     id_projeto: projectId,
-                    notas: [scores.criatividade, scores.metodologia, scores.relevancia, scores.apresentacao, scores.nota5, scores.nota6],
+                    notas: criterionNames.map(function (criterion) {
+                        if (typeof scores[criterion] !== "number") return 0;
+                        return scores[criterion];
+                    }),
                     comentario: form.querySelector("#observacoes").value
                 }).then(function (result) {
                     window.sessionStorage.setItem("sic_last_review", JSON.stringify(result || {}));

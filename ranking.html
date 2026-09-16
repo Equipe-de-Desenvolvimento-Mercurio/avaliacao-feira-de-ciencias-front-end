@@ -43,6 +43,10 @@
                 <select id="evento-ranking" aria-label="Selecionar evento do ranking">
                     <option value="">Carregando eventos...</option>
                 </select>
+                <label class="evento-ranking-label" for="categoria-ranking">Categoria</label>
+                <select id="categoria-ranking" aria-label="Selecionar categoria do ranking" disabled>
+                    <option value="">Carregando categorias...</option>
+                </select>
                 <i class="fi fi-rs-bell"></i>
                 <i class="fi fi-rr-settings"></i>
                 <div class="perfil"></div>
@@ -56,9 +60,9 @@
                     <p>Ranking dos projetos do evento selecionado.</p>
                     </div>
                     <div class="btn-pdf">
-                        <button id="pdf">
+                        <button id="csv">
                             <i class="fi fi-br-download"></i>
-                            Exportar para PDF
+                            Exportar CSV
                         </button>
                     </div>
                 </div>

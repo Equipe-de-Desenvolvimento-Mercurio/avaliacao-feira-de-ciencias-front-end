@@ -13,6 +13,16 @@
     font-size: 12px;
 }
 
+#categoria-ranking {
+    max-width: 230px;
+    padding: 8px 10px;
+    border: 1px solid #d7dce5;
+    border-radius: 6px;
+    background: #fff;
+    color: #182333;
+    font-size: 12px;
+}
+
 /* Ranking - estilos especificos (layout admin em global.css) */
 
 .ranking {
@@ -208,6 +218,15 @@
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
+}
+
+.ranking-categoria {
+    padding: 14px 24px 10px;
+    border-bottom: 1px solid var(--sic-line);
+    color: var(--sic-info);
+    background: #f8fafc;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .tabela-linha {
