@@ -356,7 +356,9 @@
             group.className = "monitor-grupo";
             var title = document.createElement("h4");
             title.className = "monitor-grupo-titulo";
-            title.textContent = type === "artistico" ? "Avaliações artísticas" : type === "tecnico" ? "Avaliações técnicas" : "Avaliações - " + type;
+            title.textContent = type === "artistico" ? "Avaliações artísticas" :
+                type === "tecnico" ? "Avaliações técnicas" :
+                type === "convidado" ? "Avaliações de convidados" : "Avaliações - " + type;
             group.appendChild(title);
 
             var criteria = (criteriaByType && criteriaByType[type]) || [];

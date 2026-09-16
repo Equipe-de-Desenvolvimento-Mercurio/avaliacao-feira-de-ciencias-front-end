@@ -76,6 +76,7 @@ Valores de `tipo_avaliador` para professores:
 
 - `tecnico`
 - `artistico`
+- `convidado`
 
 ### POST `/auth/cadastrar`
 
@@ -555,6 +556,7 @@ Pesos atuais:
 |---|---:|
 | `artistico` | `1` |
 | `tecnico` | `3` |
+| `convidado` | `1` |
 
 Exemplo para um avaliador tecnico:
 
