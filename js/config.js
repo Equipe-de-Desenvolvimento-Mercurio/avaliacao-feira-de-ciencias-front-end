@@ -1,3 +1,3 @@
 window.SIC_CONFIG = {
-    apiBaseUrl: "http://localhost:3000"
+    apiBaseUrl: "https://avaliacao-feira-de-ciencias-api.onrender.com"
 };
