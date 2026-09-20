@@ -92,35 +92,45 @@
 
     function loadProjectEvaluatorOptions() {
         var eventSelect = document.querySelector("#evento-projeto");
-        var evaluatorSelect = document.querySelector("#avaliadores-projeto");
-        if (!eventSelect || !evaluatorSelect || !api || !api.isConfigured()) return;
+        var evaluatorList = document.querySelector("#avaliadores-projeto");
+        if (!eventSelect || !evaluatorList || !api || !api.isConfigured()) return;
 
         function load(eventId) {
-            evaluatorSelect.innerHTML = "";
-            evaluatorSelect.disabled = true;
+            evaluatorList.innerHTML = "";
+            evaluatorList.classList.add("is-loading");
             if (!eventId) {
-                evaluatorSelect.innerHTML = "<option value=\"\">Selecione primeiro um evento</option>";
+                evaluatorList.innerHTML = "<p class=\"opcoes-avaliadores-vazio\">Selecione primeiro um evento.</p>";
+                evaluatorList.classList.remove("is-loading");
                 return;
             }
 
-            evaluatorSelect.innerHTML = "<option value=\"\">Carregando professores...</option>";
+            evaluatorList.innerHTML = "<p class=\"opcoes-avaliadores-vazio\">Carregando professores...</p>";
             api.professors.list(eventId).then(function (response) {
                 var professors = normalizeEvents(response);
-                evaluatorSelect.innerHTML = "";
+                evaluatorList.innerHTML = "";
                 if (!professors.length) {
-                    evaluatorSelect.innerHTML = "<option value=\"\">Nenhum professor vinculado a este evento</option>";
+                    evaluatorList.innerHTML = "<p class=\"opcoes-avaliadores-vazio\">Nenhum professor vinculado a este evento.</p>";
+                    evaluatorList.classList.remove("is-loading");
                     return;
                 }
                 professors.forEach(function (professor) {
-                    var option = document.createElement("option");
-                    option.value = professor.id_usuario;
-                    option.textContent = (professor.nome_usuario || professor.nome || "Sem nome") +
+                    var label = document.createElement("label");
+                    label.className = "opcao-avaliador";
+                    var checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.name = "avaliadores-projeto";
+                    checkbox.value = professor.id_usuario;
+                    var text = document.createElement("span");
+                    text.textContent = (professor.nome_usuario || professor.nome || "Sem nome") +
                         " - " + (professor.tipo_avaliador || "tipo não informado");
-                    evaluatorSelect.appendChild(option);
+                    label.appendChild(checkbox);
+                    label.appendChild(text);
+                    evaluatorList.appendChild(label);
                 });
-                evaluatorSelect.disabled = false;
+                evaluatorList.classList.remove("is-loading");
             }).catch(function (error) {
-                evaluatorSelect.innerHTML = "<option value=\"\">Não foi possível carregar os professores</option>";
+                evaluatorList.innerHTML = "<p class=\"opcoes-avaliadores-vazio\">Não foi possível carregar os professores.</p>";
+                evaluatorList.classList.remove("is-loading");
                 showError(error);
             });
         }
@@ -631,16 +641,33 @@
             window.localStorage.setItem("sic_current_event", selectedEventId);
             return Promise.all([
                 api.projects.list(selectedEventId),
-                api.professors.list(selectedEventId),
-                api.assignments.list(selectedEventId),
-                api.categories.list(),
-                getCoordinatorEvents()
+                api.professors.list(selectedEventId).catch(function () { return []; }),
+                api.assignments.list(selectedEventId).catch(function () { return []; }),
+                api.categories.list().catch(function () { return []; }),
+                getCoordinatorEvents().catch(function () { return []; })
             ]).then(function (responses) {
+                var assignmentResponse = responses[2];
+                var assignments = Array.isArray(assignmentResponse) ? assignmentResponse :
+                    (assignmentResponse && (assignmentResponse.data || assignmentResponse.atribuicoes)) || [];
+                var projects = normalizeEvents(responses[0]);
+                var projectsById = {};
+                projects.forEach(function (project) {
+                    projectsById[String(project.id_projeto)] = project;
+                });
+                assignments.forEach(function (assignment) {
+                    var assignmentProject = assignment.projeto || assignment.project;
+                    var projectId = assignment.id_projeto || (assignmentProject && assignmentProject.id_projeto);
+                    if (!projectId) return;
+                    var project = projectsById[String(projectId)] || { id_projeto: projectId };
+                    projectsById[String(projectId)] = Object.assign({}, project, assignmentProject || {}, {
+                        id_projeto: projectId
+                    });
+                });
                 return {
                     eventId: selectedEventId,
-                    projects: normalizeEvents(responses[0]),
+                    projects: Object.keys(projectsById).map(function (projectId) { return projectsById[projectId]; }),
                     professors: normalizeEvents(responses[1]),
-                    assignments: Array.isArray(responses[2]) ? responses[2] : (responses[2] && (responses[2].data || responses[2].atribuicoes)) || [],
+                    assignments: assignments,
                     categories: Array.isArray(responses[3]) ? responses[3] : (responses[3] && responses[3].data) || [],
                     events: normalizeEvents(responses[4])
                 };
@@ -1578,9 +1605,9 @@
             var name = document.querySelector("#nome-projeto").value.trim();
             var summary = document.querySelector("#resumo-projeto").value.trim();
             var stand = document.querySelector("#estande-projeto").value.trim();
-            var evaluatorSelect = document.querySelector("#avaliadores-projeto");
-            var evaluatorIds = evaluatorSelect ? Array.from(evaluatorSelect.selectedOptions).map(function (option) {
-                return option.value;
+            var evaluatorList = document.querySelector("#avaliadores-projeto");
+            var evaluatorIds = evaluatorList ? Array.from(evaluatorList.querySelectorAll("input[name='avaliadores-projeto']:checked")).map(function (checkbox) {
+                return checkbox.value;
             }).filter(Boolean) : [];
             if (!eventId || !categoryId || !name || !summary || !stand) {
                 window.alert("Informe o evento, a categoria, o nome, o resumo e o estande do projeto.");

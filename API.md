@@ -61,7 +61,7 @@ Retorna `409` quando o avaliador ja estiver atribuido ao projeto.
 
 Remove a atribuicao individual. Retorna `404` se ela nao existir.
 
-### GET `/assignment/event/:id_evento`
+### GET `/assignment/evento/:id_evento`
 
 Lista todas as atribuicoes dos projetos de um evento, incluindo os dados basicos do projeto e do avaliador.
 

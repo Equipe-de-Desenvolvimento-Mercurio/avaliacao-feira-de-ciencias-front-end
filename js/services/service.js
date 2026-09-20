@@ -106,7 +106,7 @@
 			list: function (eventId) { return request("/ranking/" + pathId(eventId)); }
 		},
 		assignments: {
-			list: function (eventId) { return request("/assignment/event/" + pathId(eventId)); },
+			list: function (eventId) { return request("/assignment/evento/" + pathId(eventId)); },
 			create: function (projectId, evaluatorId) {
 				return request("/assignment", {
 					method: "POST",

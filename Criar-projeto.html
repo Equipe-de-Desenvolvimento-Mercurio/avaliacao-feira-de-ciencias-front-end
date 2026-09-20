@@ -74,10 +74,10 @@
                         <select id="evento-projeto" required>
                             <option value="">Carregando eventos...</option>
                         </select>
-                        <label for="avaliadores-projeto">Avaliadores responsáveis</label>
-                        <select id="avaliadores-projeto" multiple size="5" disabled aria-describedby="avaliadores-projeto-ajuda">
-                            <option value="">Selecione primeiro um evento</option>
-                        </select>
+                        <span class="campo-label">Avaliadores responsáveis</span>
+                        <div id="avaliadores-projeto" class="lista-avaliadores-projeto" aria-describedby="avaliadores-projeto-ajuda">
+                            <p class="opcoes-avaliadores-vazio">Selecione primeiro um evento.</p>
+                        </div>
                         <p id="avaliadores-projeto-ajuda" class="campo-ajuda">Selecione um ou mais professores para avaliar este projeto.</p>
                         <label for="categoria-projeto">Categoria *</label>
                         <select id="categoria-projeto" required>

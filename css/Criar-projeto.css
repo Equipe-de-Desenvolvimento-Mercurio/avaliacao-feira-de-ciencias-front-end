@@ -45,9 +45,55 @@ form label {
     gap: 10px;
 }
 
-#avaliadores-projeto {
-    min-height: 112px;
+.campo-label {
+    color: var(--sic-ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.lista-avaliadores-projeto {
+    display: grid;
+    gap: 6px;
+    min-height: 48px;
+    max-height: 160px;
     padding: 8px;
+    overflow-y: auto;
+    border: 1px solid #cbd3dc;
+    border-radius: var(--sic-radius);
+    background: var(--sic-surface);
+}
+
+.lista-avaliadores-projeto.is-loading {
+    opacity: .65;
+}
+
+.opcao-avaliador {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 32px;
+    padding: 5px 6px;
+    border-radius: var(--sic-radius);
+    color: var(--sic-ink);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.opcao-avaliador:hover {
+    background: var(--sic-accent-soft);
+}
+
+.opcao-avaliador input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--sic-accent);
+}
+
+.opcoes-avaliadores-vazio {
+    padding: 6px;
+    color: var(--sic-muted);
+    font-size: 12px;
 }
 
 .campo-ajuda {
