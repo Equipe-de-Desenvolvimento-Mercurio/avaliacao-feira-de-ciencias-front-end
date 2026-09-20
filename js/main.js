@@ -86,7 +86,49 @@
             });
             var currentEvent = window.localStorage.getItem("sic_current_event");
             if (currentEvent) select.value = currentEvent;
+            if (select.value) select.dispatchEvent(new Event("change"));
         }).catch(showError);
+    }
+
+    function loadProjectEvaluatorOptions() {
+        var eventSelect = document.querySelector("#evento-projeto");
+        var evaluatorSelect = document.querySelector("#avaliadores-projeto");
+        if (!eventSelect || !evaluatorSelect || !api || !api.isConfigured()) return;
+
+        function load(eventId) {
+            evaluatorSelect.innerHTML = "";
+            evaluatorSelect.disabled = true;
+            if (!eventId) {
+                evaluatorSelect.innerHTML = "<option value=\"\">Selecione primeiro um evento</option>";
+                return;
+            }
+
+            evaluatorSelect.innerHTML = "<option value=\"\">Carregando professores...</option>";
+            api.professors.list(eventId).then(function (response) {
+                var professors = normalizeEvents(response);
+                evaluatorSelect.innerHTML = "";
+                if (!professors.length) {
+                    evaluatorSelect.innerHTML = "<option value=\"\">Nenhum professor vinculado a este evento</option>";
+                    return;
+                }
+                professors.forEach(function (professor) {
+                    var option = document.createElement("option");
+                    option.value = professor.id_usuario;
+                    option.textContent = (professor.nome_usuario || professor.nome || "Sem nome") +
+                        " - " + (professor.tipo_avaliador || "tipo não informado");
+                    evaluatorSelect.appendChild(option);
+                });
+                evaluatorSelect.disabled = false;
+            }).catch(function (error) {
+                evaluatorSelect.innerHTML = "<option value=\"\">Não foi possível carregar os professores</option>";
+                showError(error);
+            });
+        }
+
+        eventSelect.addEventListener("change", function () {
+            load(eventSelect.value);
+        });
+        if (eventSelect.value) load(eventSelect.value);
     }
 
     function loadProjectCategoryOptions() {
@@ -152,6 +194,115 @@
         }).catch(showError);
     }
 
+    function getCoordinatorEvents() {
+        var user = currentUser();
+        return api.events.listByUser(userId(user)).then(function (response) {
+            return normalizeEvents(response);
+        });
+    }
+
+    function modalElement() {
+        var dialog = document.querySelector("#sic-modal");
+        if (dialog) return dialog;
+        dialog = document.createElement("dialog");
+        dialog.id = "sic-modal";
+        dialog.innerHTML = "<div class=\"sic-modal-box\"><div class=\"sic-modal-header\"><h2></h2><button type=\"button\" class=\"sic-modal-close\" aria-label=\"Fechar\">×</button></div><div class=\"sic-modal-content\"></div></div>";
+        document.body.appendChild(dialog);
+        dialog.querySelector(".sic-modal-close").addEventListener("click", function () { dialog.close(); });
+        dialog.addEventListener("click", function (event) {
+            if (event.target === dialog) dialog.close();
+        });
+        return dialog;
+    }
+
+    function openModal(title, content, onSubmit) {
+        var dialog = modalElement();
+        var contentElement = dialog.querySelector(".sic-modal-content");
+        dialog.querySelector(".sic-modal-header h2").textContent = title;
+        contentElement.innerHTML = "";
+        contentElement.appendChild(content);
+        dialog.showModal();
+        var firstInput = content.querySelector("input, select, textarea");
+        if (firstInput) window.setTimeout(function () { firstInput.focus(); }, 0);
+        var form = content.querySelector("form");
+        if (form) form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            onSubmit(form, dialog);
+        });
+    }
+
+    function confirmAction(message, onConfirm) {
+        var content = document.createElement("div");
+        content.innerHTML = "<p class=\"sic-modal-message\"></p><div class=\"sic-modal-actions\"><button type=\"button\" class=\"sic-btn-ghost\" data-cancel>Cancelar</button><button type=\"button\" class=\"sic-btn-danger\" data-confirm>Excluir</button></div>";
+        content.querySelector(".sic-modal-message").textContent = message;
+        openModal("Confirmar exclusão", content, function () {});
+        var dialog = modalElement();
+        content.querySelector("[data-cancel]").addEventListener("click", function () { dialog.close(); });
+        content.querySelector("[data-confirm]").addEventListener("click", function () {
+            var button = content.querySelector("[data-confirm]");
+            button.disabled = true;
+            Promise.resolve(onConfirm()).then(function () { dialog.close(); }).catch(function () { button.disabled = false; });
+        });
+    }
+
+    function emailIsValid(input) {
+        input.value = String(input.value || "").trim().toLowerCase();
+        input.setCustomValidity("");
+        if (!input.value || !input.validity.valid || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+            input.setCustomValidity("Informe um e-mail válido.");
+            return false;
+        }
+        return true;
+    }
+
+    function professorEditModal(professor, refresh) {
+        var content = document.createElement("div");
+        content.innerHTML = "<form class=\"sic-modal-form\"><label>Nome<input name=\"nome\" required></label><label>E-mail<input name=\"email\" type=\"email\" required></label><label>Tipo de avaliador<select name=\"tipo\" required><option value=\"tecnico\">Técnico</option><option value=\"artistico\">Artístico</option></select></label><label>Nova senha <small>(opcional)</small><input name=\"senha\" type=\"password\"></label><fieldset><legend>Eventos vinculados</legend><div class=\"sic-event-list\">Carregando...</div></fieldset><div class=\"sic-modal-actions\"><button type=\"button\" class=\"sic-btn-ghost\" data-cancel>Cancelar</button><button type=\"submit\">Salvar alterações</button></div></form>";
+        var form = content.querySelector("form");
+        form.nome.value = professor.nome_usuario || professor.nome || "";
+        form.email.value = professor.email || "";
+        form.tipo.value = professor.tipo_avaliador || "tecnico";
+        content.querySelector("[data-cancel]").addEventListener("click", function () { modalElement().close(); });
+        getCoordinatorEvents().then(function (events) {
+            var eventList = content.querySelector(".sic-event-list");
+            eventList.innerHTML = "";
+            events.forEach(function (event) {
+                var label = document.createElement("label");
+                label.innerHTML = "<input type=\"checkbox\" name=\"eventos\"> <span></span>";
+                label.querySelector("input").value = event.id_evento;
+                label.querySelector("input").checked = Array.isArray(professor.eventos) && professor.eventos.some(function (id) { return String(id) === String(event.id_evento); });
+                label.querySelector("span").textContent = event.nome_evento;
+                eventList.appendChild(label);
+            });
+        }).catch(showError);
+        openModal("Editar professor", content, function (submittedForm, dialog) {
+            if (!emailIsValid(submittedForm.email) || !submittedForm.checkValidity()) return;
+            var events = Array.from(submittedForm.querySelectorAll("input[name=eventos]:checked")).map(function (input) { return Number(input.value); });
+            if (!events.length) { window.alert("Selecione pelo menos um evento."); return; }
+            var payload = { nome: submittedForm.nome.value.trim(), email: submittedForm.email.value, tipo_avaliador: submittedForm.tipo.value, eventos: events };
+            if (submittedForm.senha.value) payload.senha = submittedForm.senha.value;
+            api.auth.updateProfessor(professor.id_usuario, payload).then(function () { dialog.close(); refresh(); }).catch(showError);
+        });
+    }
+
+    function projectEditModal(project, categories, events, refresh) {
+        var content = document.createElement("div");
+        content.innerHTML = "<form class=\"sic-modal-form\"><label>Nome<input name=\"nome\" required></label><label>Resumo<textarea name=\"resumo\" required></textarea></label><label>Evento<select name=\"evento\" required></select></label><label>Categoria<select name=\"categoria\" required></select></label><label>Estande<input name=\"estande\" required></label><div class=\"sic-modal-actions\"><button type=\"button\" class=\"sic-btn-ghost\" data-cancel>Cancelar</button><button type=\"submit\">Salvar alterações</button></div></form>";
+        var form = content.querySelector("form");
+        form.nome.value = project.nome_projeto || "";
+        form.resumo.value = project.resumo || "";
+        form.estande.value = project.estande || "";
+        events.forEach(function (event) { form.evento.add(new Option(event.nome_evento, event.id_evento)); });
+        categories.forEach(function (category) { form.categoria.add(new Option(category.nome_categoria, category.id_categoria)); });
+        form.evento.value = project.id_evento;
+        form.categoria.value = project.id_categoria;
+        content.querySelector("[data-cancel]").addEventListener("click", function () { modalElement().close(); });
+        openModal("Editar projeto", content, function (submittedForm, dialog) {
+            if (!submittedForm.checkValidity()) { submittedForm.reportValidity(); return; }
+            api.projects.update(project.id_projeto, { id_evento: Number(submittedForm.evento.value), id_categoria: Number(submittedForm.categoria.value), nome_projeto: submittedForm.nome.value.trim(), resumo: submittedForm.resumo.value.trim(), estande: submittedForm.estande.value.trim() }).then(function () { dialog.close(); refresh(); }).catch(showError);
+        });
+    }
+
     function setupProfessorFilters(professors, list) {
         var search = document.querySelector("#busca-professor");
         var type = document.querySelector("#filtro-tipo-professor");
@@ -187,14 +338,24 @@
                 row.innerHTML = "<div class=\"info\" id=\"info-nome\"><div class=\"perfil\"></div><div class=\"nome\"><h4></h4><p></p></div></div>" +
                     "<div class=\"info\" id=\"info-email\"><p></p></div>" +
                     "<div class=\"info\" id=\"info-projetos\"><div class=\"contagem\"><p>-</p></div></div>" +
-                    "<div class=\"info\" id=\"info-acoes\"><button type=\"button\" title=\"Monitorar professor\"><i class=\"fi fi-rr-eye\"></i></button></div>";
+                    "<div class=\"info\" id=\"info-acoes\"><button type=\"button\" title=\"Monitorar professor\"><i class=\"fi fi-rr-eye\"></i></button><button type=\"button\" title=\"Editar professor\"><i class=\"fi fi-rr-pencil\"></i></button><button type=\"button\" class=\"acao-perigo\" title=\"Excluir professor\"><i class=\"fi fi-rr-trash\"></i></button></div>";
                 row.querySelector("#info-nome h4").textContent = nameOf(professor);
                 row.querySelector("#info-nome p").textContent = "Tipo: " + typeOf(professor);
                 row.querySelector("#info-email p").textContent = emailOf(professor);
-                row.querySelector("#info-acoes button").addEventListener("click", function () {
+                var actions = row.querySelectorAll("#info-acoes button");
+                actions[0].addEventListener("click", function () {
                     var professorId = professor.id_usuario;
                     window.sessionStorage.setItem("sic_monitor_professor", professorId);
                     window.location.href = "monitoramento-de-professores.html?id_usuario=" + encodeURIComponent(professorId);
+                });
+                actions[1].addEventListener("click", function () { professorEditModal(professor, loadCoordinatorProfessors); });
+                actions[2].addEventListener("click", function () {
+                    confirmAction("Excluir " + nameOf(professor) + "? Professores com avaliações não podem ser excluídos.", function () {
+                        return api.auth.remove(professor.id_usuario).then(loadCoordinatorProfessors).catch(function (error) {
+                            showError(error);
+                            throw error;
+                        });
+                    });
                 });
                 list.appendChild(row);
             });
@@ -468,18 +629,32 @@
         eventRequest.then(function (selectedEventId) {
             if (!selectedEventId) throw new Error("Nenhum evento selecionado para listar os projetos.");
             window.localStorage.setItem("sic_current_event", selectedEventId);
-            return api.projects.list(selectedEventId);
-        }).then(function (response) {
-            var projects = normalizeEvents(response);
+            return Promise.all([
+                api.projects.list(selectedEventId),
+                api.professors.list(selectedEventId),
+                api.assignments.list(selectedEventId),
+                api.categories.list(),
+                getCoordinatorEvents()
+            ]).then(function (responses) {
+                return {
+                    eventId: selectedEventId,
+                    projects: normalizeEvents(responses[0]),
+                    professors: normalizeEvents(responses[1]),
+                    assignments: Array.isArray(responses[2]) ? responses[2] : (responses[2] && (responses[2].data || responses[2].atribuicoes)) || [],
+                    categories: Array.isArray(responses[3]) ? responses[3] : (responses[3] && responses[3].data) || [],
+                    events: normalizeEvents(responses[4])
+                };
+            });
+        }).then(function (data) {
             var lists = document.querySelectorAll(".box-main > .lista");
             lists.forEach(function (item, index) {
                 if (index > 0) item.remove();
             });
-            setupProjectFilters(projects, list);
+            setupProjectFilters(data.projects, list, data.professors, data.assignments, data.eventId, data.categories, data.events);
         }).catch(showError);
     }
 
-    function setupProjectFilters(projects, list) {
+    function setupProjectFilters(projects, list, professors, assignments, eventId, categories, events) {
         var search = document.querySelector("#navegado");
         var category = document.querySelector("#filtro-categoria");
         var professor = document.querySelector("#filtro-professor");
@@ -488,8 +663,24 @@
         var normalized = function (value) {
             return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         };
-        var categoryOf = function (project) { return project.categoria || project.categoria_projeto || "Projeto"; };
-        var professorOf = function (project) { return project.professor || project.nome_professor || project.professor_nome || ""; };
+        var categoryOf = function (project) { return project.nome_categoria || project.categoria || project.categoria_projeto || "Projeto"; };
+        var assignmentProjectId = function (assignment) { return assignment.id_projeto || assignment.projeto_id || (assignment.projeto && assignment.projeto.id_projeto); };
+        var assignmentEvaluatorId = function (assignment) { return assignment.id_avaliador || assignment.avaliador_id || (assignment.avaliador && (assignment.avaliador.id_usuario || assignment.avaliador.id)); };
+        var evaluatorName = function (evaluator) { return evaluator.nome_usuario || evaluator.nome || "ID " + evaluator.id_usuario; };
+        var assignmentsFor = function (project) {
+            return assignments.filter(function (assignment) {
+                return String(assignmentProjectId(assignment)) === String(project.id_projeto);
+            });
+        };
+        var professorOf = function (project) {
+            var assigned = assignmentsFor(project);
+            return assigned.map(function (assignment) {
+                var evaluator = professors.find(function (professor) {
+                    return String(professor.id_usuario) === String(assignmentEvaluatorId(assignment));
+                });
+                return evaluator ? evaluatorName(evaluator) : "ID " + assignmentEvaluatorId(assignment);
+            }).join(", ");
+        };
         var statusOf = function (project) { return project.concluido ? "Concluído" : "Em avaliação"; };
 
         function addOptions(select, values, emptyLabel) {
@@ -530,17 +721,97 @@
                 row.innerHTML = "<div class=\"info inf\"><div class=\"nome\"><h4></h4><p></p></div></div>" +
                     "<div class=\"categoria inf\"></div>" +
                     "<div class=\"professores inf\"><p></p></div>" +
+                    "<div class=\"atribuicoes inf\"></div>" +
                     "<div class=\"status inf\"><p></p></div>" +
-                    "<div class=\"pontuacao inf\"><p></p></div>";
+                    "<div class=\"pontuacao inf\"><p></p></div>" +
+                    "<div class=\"acoes-projeto inf\"></div>";
                 row.querySelector("h4").textContent = project.nome_projeto || "Sem nome";
                 row.querySelector(".nome p").textContent = "ID: " + project.id_projeto;
                 row.querySelector(".categoria").textContent = categoryOf(project);
                 row.querySelector(".professores p").textContent = professorOf(project) || (project.total_avaliaram || 0) + "/" + (project.total_avaliadores || 0) + " avaliações";
                 row.querySelector(".status p").textContent = statusOf(project);
                 row.querySelector(".pontuacao p").textContent = project.pontuacao_total || "-";
+                renderAssignments(row.querySelector(".atribuicoes"), project);
+                renderProjectActions(row.querySelector(".acoes-projeto"), project);
                 list.appendChild(row);
             });
             if (counter) counter.textContent = "Exibindo " + filtered.length + " de " + projects.length + " projeto(s)";
+        }
+
+        function renderProjectActions(container, project) {
+            var edit = document.createElement("button");
+            edit.type = "button";
+            edit.title = "Editar projeto";
+            edit.innerHTML = "<i class=\"fi fi-rr-pencil\"></i>";
+            edit.addEventListener("click", function () { projectEditModal(project, categories, events, function () { loadCoordinatorProjects(); }); });
+            var remove = document.createElement("button");
+            remove.type = "button";
+            remove.title = "Excluir projeto";
+            remove.className = "acao-perigo";
+            remove.innerHTML = "<i class=\"fi fi-rr-trash\"></i>";
+            remove.addEventListener("click", function () {
+                confirmAction("Excluir o projeto " + (project.nome_projeto || "sem nome") + "? Projetos com avaliações não podem ser excluídos.", function () {
+                    return api.projects.remove(project.id_projeto).then(loadCoordinatorProjects).catch(function (error) {
+                        showError(error);
+                        throw error;
+                    });
+                });
+            });
+            container.appendChild(edit);
+            container.appendChild(remove);
+        }
+
+        function renderAssignments(container, project) {
+            container.innerHTML = "";
+            assignmentsFor(project).forEach(function (assignment) {
+                var evaluatorId = assignmentEvaluatorId(assignment);
+                var tag = document.createElement("span");
+                tag.className = "atribuicao";
+                tag.textContent = evaluatorName(professors.find(function (professor) {
+                    return String(professor.id_usuario) === String(evaluatorId);
+                }) || { id_usuario: evaluatorId });
+                var remove = document.createElement("button");
+                remove.type = "button";
+                remove.title = "Remover atribuição";
+                remove.textContent = "×";
+                remove.addEventListener("click", function () {
+                    api.assignments.remove(project.id_projeto, evaluatorId).then(function () {
+                        assignments = assignments.filter(function (item) {
+                            return !(String(assignmentProjectId(item)) === String(project.id_projeto) && String(assignmentEvaluatorId(item)) === String(evaluatorId));
+                        });
+                        render();
+                    }).catch(showError);
+                });
+                tag.appendChild(remove);
+                container.appendChild(tag);
+            });
+
+            var select = document.createElement("select");
+            select.setAttribute("aria-label", "Selecionar avaliador");
+            select.innerHTML = "<option value=\"\">Adicionar avaliador</option>";
+            professors.filter(function (professor) {
+                return !assignmentsFor(project).some(function (assignment) {
+                    return String(assignmentEvaluatorId(assignment)) === String(professor.id_usuario);
+                });
+            }).forEach(function (professor) {
+                var option = document.createElement("option");
+                option.value = professor.id_usuario;
+                option.textContent = evaluatorName(professor);
+                select.appendChild(option);
+            });
+            var add = document.createElement("button");
+            add.type = "button";
+            add.textContent = "Atribuir";
+            add.addEventListener("click", function () {
+                if (!select.value) return;
+                add.disabled = true;
+                api.assignments.create(project.id_projeto, select.value).then(function (assignment) {
+                    assignments.push(assignment);
+                    render();
+                }).catch(showError).then(function () { add.disabled = false; });
+            });
+            container.appendChild(select);
+            container.appendChild(add);
         }
 
         [search, category, professor, status].forEach(function (control) {
@@ -1283,6 +1554,7 @@
 
     if (document.querySelector("#eventos-disponiveis")) loadEventSelection();
     if (document.querySelector("#evento-projeto")) loadProjectEventOptions();
+    if (document.querySelector("#avaliadores-projeto")) loadProjectEvaluatorOptions();
     if (document.querySelector("#categoria-projeto")) loadProjectCategoryOptions();
     if (document.querySelector("#professor-eventos")) loadProfessorEventOptions();
     if (document.querySelector("#evento-coordenador")) loadCoordinatorEventSelector();
@@ -1306,6 +1578,10 @@
             var name = document.querySelector("#nome-projeto").value.trim();
             var summary = document.querySelector("#resumo-projeto").value.trim();
             var stand = document.querySelector("#estande-projeto").value.trim();
+            var evaluatorSelect = document.querySelector("#avaliadores-projeto");
+            var evaluatorIds = evaluatorSelect ? Array.from(evaluatorSelect.selectedOptions).map(function (option) {
+                return option.value;
+            }).filter(Boolean) : [];
             if (!eventId || !categoryId || !name || !summary || !stand) {
                 window.alert("Informe o evento, a categoria, o nome, o resumo e o estande do projeto.");
                 return;
@@ -1318,7 +1594,49 @@
                 nome_projeto: name,
                 resumo: summary,
                 estande: stand
-            }).then(function () {
+            }).then(function (createdProject) {
+                var projectId = createdProject && (
+                    createdProject.id_projeto ||
+                    (createdProject.projeto && createdProject.projeto.id_projeto) ||
+                    (createdProject.data && createdProject.data.id_projeto)
+                );
+                if (projectId || !evaluatorIds.length) {
+                    return { projectId: projectId, assignments: [] };
+                }
+
+                return api.projects.list(eventId).then(function (response) {
+                    var projects = normalizeEvents(response);
+                    var matches = projects.filter(function (project) {
+                        return String(project.nome_projeto || "") === name &&
+                            String(project.resumo || "") === summary &&
+                            String(project.id_categoria) === String(categoryId);
+                    });
+                    var latest = matches[matches.length - 1];
+                    return { projectId: latest && latest.id_projeto, assignments: [] };
+                });
+            }).then(function (created) {
+                if (!evaluatorIds.length) return { failed: [] };
+                if (!created.projectId) {
+                    throw new Error("A API criou o projeto, mas não retornou o ID necessário para atribuir os avaliadores. Atualize o backend ou faça as atribuições pela tela de projetos.");
+                }
+
+                var failed = [];
+                return evaluatorIds.reduce(function (promise, evaluatorId) {
+                    return promise.then(function () {
+                        return api.assignments.create(created.projectId, evaluatorId).catch(function (error) {
+                            failed.push({ evaluatorId: evaluatorId, error: error });
+                        });
+                    });
+                }, Promise.resolve()).then(function () {
+                    return { failed: failed };
+                });
+            }).then(function (result) {
+                if (result.failed.length) {
+                    var message = result.failed.map(function (item) {
+                        return "ID " + item.evaluatorId + ": " + (item.error.message || "erro desconhecido");
+                    }).join("\n");
+                    window.alert("Projeto criado, mas algumas atribuições falharam:\n" + message);
+                }
                 window.location.href = "Visualizar-projeto.html";
             }).catch(function (error) {
                 saveProjectButton.disabled = false;
@@ -1331,15 +1649,21 @@
     if (registerProfessorButton && api && api.isConfigured()) {
         registerProfessorButton.addEventListener("click", function () {
             var name = document.querySelector("#professor-nome").value.trim();
-            var email = document.querySelector("#professor-email").value.trim();
+            var emailInput = document.querySelector("#professor-email");
+            var email = emailInput.value.trim().toLowerCase();
             var type = document.querySelector("#professor-tipo").value;
             var password = document.querySelector("#professor-senha").value;
             var eventCheckboxes = document.querySelectorAll("#professor-eventos input[type=checkbox]:checked");
             var eventIds = Array.from(eventCheckboxes).map(function (checkbox) {
                 return Number(checkbox.value);
             }).filter(function (id) { return Number.isInteger(id) && id > 0; });
+            emailInput.value = email;
             if (!name || !email || !type || !password || !eventIds.length) {
                 window.alert("Preencha todos os dados e selecione pelo menos um evento.");
+                return;
+            }
+            if (!emailIsValid(emailInput)) {
+                emailInput.reportValidity();
                 return;
             }
             registerProfessorButton.disabled = true;

@@ -252,8 +252,124 @@ tbody tr:hover {
     box-shadow: none;
 }
 
+#info-acoes > button.acao-perigo {
+    color: #b42318;
+}
+
 .icon > input {
     width: 220px;
+}
+
+dialog#sic-modal {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    border: 0;
+    border-radius: var(--sic-radius-lg);
+    color: var(--sic-ink);
+    background: var(--sic-surface);
+    box-shadow: 0 20px 60px rgba(23, 33, 43, .2);
+}
+
+dialog#sic-modal::backdrop {
+    background: rgba(23, 33, 43, .48);
+}
+
+.sic-modal-box {
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+}
+
+.sic-modal-header,
+.sic-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.sic-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--sic-line);
+}
+
+.sic-modal-header h2 {
+    font-size: 18px;
+}
+
+.sic-modal-close {
+    min-height: 32px;
+    padding: 2px 10px;
+    color: var(--sic-muted);
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.sic-modal-content {
+    padding: 24px;
+}
+
+.sic-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sic-modal-form label,
+.sic-modal-form legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--sic-ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sic-modal-form fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--sic-line);
+    border-radius: var(--sic-radius);
+}
+
+.sic-event-list {
+    display: grid;
+    gap: 6px;
+}
+
+.sic-event-list label {
+    flex-direction: row;
+    align-items: center;
+    font-weight: 400;
+}
+
+.sic-modal-actions {
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.sic-btn-ghost {
+    color: var(--sic-ink) !important;
+    border: 1px solid var(--sic-line) !important;
+    background: var(--sic-surface) !important;
+}
+
+.sic-btn-danger,
+.acao-perigo {
+    color: #b42318 !important;
+}
+
+.sic-btn-danger {
+    border: 1px solid #f2b8b5 !important;
+    background: #fff1f0 !important;
+}
+
+.sic-modal-message {
+    margin-bottom: 16px;
+    line-height: 1.6;
 }
 
 /* ── Admin layout (sidebar + main) ── */

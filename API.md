@@ -22,6 +22,7 @@ Rotas base:
 | Professores | `/teacher` |
 | Criterios | `/criterios` |
 | Ranking | `/ranking` |
+| Atribuicoes | `/assignment` |
 
 Todas as requisicoes com JSON devem usar:
 
@@ -31,7 +32,42 @@ Content-Type: application/json
 
 Os IDs retornados pelo PostgreSQL podem chegar como `string`, mesmo sendo numericos no banco. O frontend deve comparar IDs convertendo para string ou normalizar a resposta.
 
-## 2. Autenticacao
+## 2. Atribuicoes de projetos
+
+As rotas desta seção exigem token de coordenador. O mesmo projeto pode ser atribuido a varios avaliadores, mas a mesma combinacao projeto/avaliador nao pode ser cadastrada duas vezes.
+
+### POST `/assignment`
+
+Cria uma atribuicao de projeto para um professor avaliador.
+
+#### Body
+
+```json
+{
+  "id_projeto": 1,
+  "id_avaliador": 10
+}
+```
+
+O avaliador precisa ser professor e estar vinculado ao mesmo evento do projeto.
+
+#### Resposta `201`
+
+Retorna a atribuicao criada com `id_atribuicao`, `id_projeto`, `id_avaliador`, `id_atribuido_por` e `data_criacao`.
+
+Retorna `409` quando o avaliador ja estiver atribuido ao projeto.
+
+### DELETE `/assignment/:id_projeto/:id_avaliador`
+
+Remove a atribuicao individual. Retorna `404` se ela nao existir.
+
+### GET `/assignment/event/:id_evento`
+
+Lista todas as atribuicoes dos projetos de um evento, incluindo os dados basicos do projeto e do avaliador.
+
+Professores podem consultar somente os projetos destinados a eles nas rotas de projetos, no painel, no ranking e na avaliacao. O formato das respostas existentes permanece igual; apenas os projetos nao atribuidos deixam de ser retornados.
+
+## 3. Autenticacao
 
 As rotas protegidas usam JWT. Depois do login, envie o token em todas as requisicoes protegidas:
 
@@ -118,7 +154,7 @@ Cria um usuario. Atualmente esta rota nao exige token.
 
 ### DELETE `/auth/usuario/:id`
 
-Exclui um usuario. Requer token de coordenador.
+Exclui um professor. Requer token de coordenador. Professores que ja possuem avaliacoes nao podem ser excluidos.
 
 #### Resposta `200`
 
@@ -128,7 +164,25 @@ Exclui um usuario. Requer token de coordenador.
 }
 ```
 
-## 3. Eventos
+### PUT `/auth/usuario/:id`
+
+Edita os dados de um professor e substitui seus eventos vinculados. Requer token de coordenador.
+
+#### Body
+
+```json
+{
+  "nome": "Maria Silva Atualizada",
+  "email": "maria@exemplo.com",
+  "senha": "nova-senha",
+  "tipo_avaliador": "tecnico",
+  "eventos": [1, 2]
+}
+```
+
+`senha` e opcional. O professor nao pode ser desvinculado de um evento enquanto possuir atribuicoes de projetos desse evento.
+
+## 4. Eventos
 
 ### POST `/event`
 
@@ -348,7 +402,9 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
   }
   ```
 
-## 4. Projetos
+## 5. Projetos
+
+As operações de criacao, edicao e exclusao de projetos exigem token de coordenador. A exclusao nao remove projetos que ja possuem avaliacoes.
 
 ### POST `/project`
 
@@ -437,6 +493,28 @@ GET http://localhost:3000/project/1?id_categoria=6
 
 Busca um projeto especifico pelo ID. A resposta tem o mesmo formato de um item da listagem anterior, incluindo `id_categoria` e `nome_categoria`.
 
+### PUT `/project/:id_projeto`
+
+Edita um projeto. Requer token de coordenador.
+
+#### Body
+
+```json
+{
+  "id_evento": 1,
+  "id_categoria": 6,
+  "nome_projeto": "Energia Sustentavel Atualizado",
+  "resumo": "Novo resumo do projeto",
+  "estande": "12"
+}
+```
+
+Todos os campos sao obrigatorios. O evento e a categoria precisam existir. Se o projeto possuir atribuicoes, os avaliadores precisam participar do novo evento.
+
+### DELETE `/project/:id_projeto`
+
+Exclui um projeto. Requer token de coordenador. Projetos que ja possuem avaliacoes nao podem ser excluidos.
+
 ### GET `/project/:id_evento/:id_usuario/evaluated`
 
 Lista os projetos do evento que ja foram avaliados pelo usuario autenticado.
@@ -447,7 +525,7 @@ Lista os projetos do evento que ainda nao foram avaliados pelo usuario autentica
 
 Nas duas rotas, `:id_usuario` deve ser o mesmo ID do token.
 
-## 5. Categorias
+## 6. Categorias
 
 Categorias representam a area/nivel estudantil do projeto (ex: `Fund1`, `Fund2`, `Ensino Médio`, `Técnico em Informática`, `Técnico em Administração`, `Técnico em Química`, `Técnico em Radiologia`, `Técnico em Enfermagem`). Essas oito categorias ja vem cadastradas por padrao no banco.
 
@@ -514,7 +592,7 @@ Busca uma categoria especifica pelo ID.
 }
 ```
 
-## 6. Avaliacoes
+## 7. Avaliacoes
 
 ### POST `/review`
 
@@ -575,7 +653,9 @@ Exemplo para um avaliador tecnico:
 
 Uma avaliacao por professor e permitida para cada projeto.
 
-## 7. Professores
+## 8. Professores
+
+O coordenador pode editar professores por `PUT /auth/usuario/:id` e exclui-los por `DELETE /auth/usuario/:id`. A edicao atualiza os dados cadastrais e substitui os eventos vinculados. Professores com avaliacoes nao podem ser excluidos.
 
 ### GET `/teacher/evento/:id_evento`
 
@@ -646,7 +726,7 @@ Retorna o painel de avaliacao de um professor no evento. Requer que o professor 
 }
 ```
 
-## 8. Criterios
+## 9. Criterios
 
 ### GET `/criterios/:id_usuario`
 
@@ -669,7 +749,7 @@ O ID da URL deve ser o mesmo ID do token.
 ]
 ```
 
-## 9. Codigos de resposta
+## 10. Codigos de resposta
 
 | Codigo | Uso |
 |---:|---|
@@ -698,7 +778,7 @@ A rota de exclusao de usuario usa a chave `erro` em alguns retornos:
 }
 ```
 
-## 10. Exemplo de cliente JavaScript
+## 11. Exemplo de cliente JavaScript
 
 ```js
 const API_URL = "http://localhost:3000";
@@ -736,7 +816,7 @@ async function fazerLogin(email, senha) {
 }
 ```
 
-## 11. Pontos de atencao para o frontend
+## 12. Pontos de atencao para o frontend
 
 - Salve o `token` recebido no login e envie-o como `Bearer`.
 - Nao envie `id_avaliador` ao registrar avaliacao.

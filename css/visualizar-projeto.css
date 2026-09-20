@@ -61,7 +61,7 @@
 .abas,
 .registro {
     display: grid;
-    grid-template-columns: minmax(220px, 2fr) minmax(130px, 1fr) minmax(160px, 1.2fr) 130px 110px;
+    grid-template-columns: minmax(220px, 2fr) minmax(130px, 1fr) minmax(160px, 1.2fr) minmax(220px, 1.5fr) 130px 110px 82px;
     align-items: center;
     gap: 16px;
 }
@@ -92,10 +92,78 @@
 .registro .info,
 .registro .categoria,
 .registro .professores,
+.registro .atribuicoes,
 .registro .status,
 .registro .pontuacao {
     width: auto;
     margin: 0;
+}
+
+.atribuicoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.atribuicao {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 7px;
+    border-radius: 99px;
+    color: var(--sic-accent);
+    background: var(--sic-accent-soft);
+    font-size: 11px;
+}
+
+.atribuicao button {
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+}
+
+.atribuicoes select {
+    min-height: 30px;
+    max-width: 150px;
+    padding: 4px 6px;
+    font-size: 11px;
+}
+
+.atribuicoes > button {
+    min-height: 30px;
+    padding: 4px 8px;
+    border: 1px solid var(--sic-accent);
+    border-radius: var(--sic-radius);
+    color: var(--sic-accent);
+    background: var(--sic-surface);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.acoes-projeto {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.acoes-projeto button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 6px;
+    border: 1px solid var(--sic-line);
+    border-radius: var(--sic-radius);
+    color: var(--sic-muted);
+    background: var(--sic-surface);
+    cursor: pointer;
+}
+
+.acoes-projeto button:hover {
+    color: var(--sic-accent);
+    border-color: var(--sic-accent);
+    background: var(--sic-accent-soft);
 }
 
 .registro .status {

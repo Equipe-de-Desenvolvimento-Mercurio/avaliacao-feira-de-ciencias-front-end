@@ -83,6 +83,7 @@
 				return request("/auth/login", { method: "POST", body: credentials }).then(saveSession);
 			},
 			register: function (user) { return request("/auth/cadastrar", { method: "POST", body: user }); },
+			updateProfessor: function (id, professor) { return request("/auth/usuario/" + pathId(id), { method: "PUT", body: professor }); },
 			remove: function (id) { return request("/auth/usuario/" + pathId(id), { method: "DELETE" }); },
 			logout: function () {
 				window.localStorage.removeItem(TOKEN_KEY);
@@ -104,12 +105,26 @@
 		ranking: {
 			list: function (eventId) { return request("/ranking/" + pathId(eventId)); }
 		},
+		assignments: {
+			list: function (eventId) { return request("/assignment/event/" + pathId(eventId)); },
+			create: function (projectId, evaluatorId) {
+				return request("/assignment", {
+					method: "POST",
+					body: { id_projeto: projectId, id_avaliador: evaluatorId }
+				});
+			},
+			remove: function (projectId, evaluatorId) {
+				return request("/assignment/" + pathId(projectId) + "/" + pathId(evaluatorId), { method: "DELETE" });
+			}
+		},
 		categories: {
 			list: function () { return request("/categoria"); }
 		},
 		projects: {
 			list: function (eventId) { return request("/project/" + pathId(eventId)); },
 			get: function (id) { return request("/project/id/" + pathId(id)); },
+			update: function (id, project) { return request("/project/" + pathId(id), { method: "PUT", body: project }); },
+			remove: function (id) { return request("/project/" + pathId(id), { method: "DELETE" }); },
 			listEvaluated: function (eventId, userId) { return request("/project/" + pathId(eventId) + "/" + pathId(userId) + "/evaluated"); },
 			listNotEvaluated: function (eventId, userId) { return request("/project/" + pathId(eventId) + "/" + pathId(userId) + "/not_evaluated"); },
 			create: function (project) { return request("/project", { method: "POST", body: project }); }

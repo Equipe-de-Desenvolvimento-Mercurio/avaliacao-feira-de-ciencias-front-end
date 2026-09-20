@@ -39,6 +39,24 @@ form label {
     color: var(--sic-ink);
 }
 
+#form-classificacao {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#avaliadores-projeto {
+    min-height: 112px;
+    padding: 8px;
+}
+
+.campo-ajuda {
+    margin: -4px 0 8px;
+    color: var(--sic-muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
 .aviso {
     display: flex;
     align-items: flex-start;
