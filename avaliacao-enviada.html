@@ -22,6 +22,7 @@
           <div><dt>Soma das notas</dt><dd id="soma-notas">-</dd></div>
           <div><dt>Peso aplicado</dt><dd id="peso-avaliacao">-</dd></div>
           <div><dt>Pontuação total</dt><dd id="pontuacao-total">-</dd></div>
+          <div><dt>Indicação</dt><dd id="indicacao">-</dd></div>
         </dl>
         <div class="acoes">
           <a class="botao principal" href="projetos-avaliar.html">Avaliar outro projeto</a>
@@ -35,9 +36,16 @@
         if (!raw) return;
         try {
           var result = JSON.parse(raw);
-          document.getElementById("soma-notas").textContent = result.soma_notas || "-";
-          document.getElementById("peso-avaliacao").textContent = result.peso || "-";
-          document.getElementById("pontuacao-total").textContent = result.pontuacao_total || "-";
+          var show = function (value) { return value === null || value === undefined ? "-" : value; };
+          var indicationLabels = {
+            jovem_cientista: "Jovem Cientista",
+            inovacao: "Inovação",
+            responsabilidade_social: "Responsabilidade Social"
+          };
+          document.getElementById("soma-notas").textContent = show(result.soma_notas);
+          document.getElementById("peso-avaliacao").textContent = show(result.peso);
+          document.getElementById("pontuacao-total").textContent = show(result.pontuacao_total);
+          document.getElementById("indicacao").textContent = indicationLabels[result.indicacao] || "Sem indicação";
           document.getElementById("resultado-avaliacao").hidden = false;
         } catch (error) {
           window.sessionStorage.removeItem("sic_last_review");

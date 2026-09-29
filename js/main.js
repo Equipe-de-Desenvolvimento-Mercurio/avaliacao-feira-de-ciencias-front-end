@@ -1712,6 +1712,19 @@
         });
     }
 
+    // A indicação é opcional: clicar de novo no destaque marcado remove a seleção.
+    document.querySelectorAll('input[name="destaque"]').forEach(function (input) {
+        var wasChecked = false;
+        var label = document.querySelector('label[for="' + input.id + '"]');
+        [input, label].forEach(function (element) {
+            if (element) element.addEventListener("pointerdown", function () { wasChecked = input.checked; });
+        });
+        input.addEventListener("click", function () {
+            if (wasChecked) input.checked = false;
+            wasChecked = false;
+        });
+    });
+
     document.querySelectorAll(".enviar button").forEach(function (control) {
         control.addEventListener("click", function () {
             if (window.SICApi && window.SICApi.isConfigured()) {
@@ -1736,6 +1749,10 @@
                     return;
                 }
 
+                var validIndications = ["jovem_cientista", "inovacao", "responsabilidade_social"];
+                var indicationInput = form.querySelector('input[name="destaque"]:checked');
+                var indication = indicationInput && validIndications.indexOf(indicationInput.value) !== -1 ? indicationInput.value : null;
+
                 control.disabled = true;
                 window.SICApi.evaluations.submit({
                     id_projeto: projectId,
@@ -1743,7 +1760,8 @@
                         if (typeof scores[criterion] !== "number") return 0;
                         return scores[criterion];
                     }),
-                    comentario: form.querySelector("#observacoes").value
+                    comentario: form.querySelector("#observacoes").value,
+                    indicacao: indication
                 }).then(function (result) {
                     window.sessionStorage.setItem("sic_last_review", JSON.stringify(result || {}));
                     window.location.href = "avaliacao-enviada.html";

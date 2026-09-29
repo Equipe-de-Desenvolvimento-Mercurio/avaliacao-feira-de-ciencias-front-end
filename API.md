@@ -616,9 +616,12 @@ O evento precisa estar com status `em_andamento`.
     8.0,
     9.0
   ],
-  "comentario": "Boa apresentacao e dominio do assunto."
+  "comentario": "Boa apresentacao e dominio do assunto.",
+  "indicacao": "jovem_cientista"
 }
 ```
+
+`indicacao` e opcional. Valores aceitos: `jovem_cientista`, `inovacao` ou `responsabilidade_social`. Pode ser omitida ou enviada como `null` quando o professor nao fizer indicacao. Qualquer outro valor retorna `400`.
 
 Cada nota deve ser numerica e estar entre `0` e `10`. Atualmente sao exigidas exatamente seis notas.
 
@@ -634,7 +637,6 @@ Pesos atuais:
 |---|---:|
 | `artistico` | `1` |
 | `tecnico` | `3` |
-| `convidado` | `1` |
 
 Exemplo para um avaliador tecnico:
 
@@ -649,7 +651,8 @@ Exemplo para um avaliador tecnico:
   "message": "Projeto avaliado com sucesso!!",
   "soma_notas": 51.5,
   "peso": 3,
-  "pontuacao_total": 154.5
+  "pontuacao_total": 154.5,
+  "indicacao": "jovem_cientista"
 }
 ```
 
