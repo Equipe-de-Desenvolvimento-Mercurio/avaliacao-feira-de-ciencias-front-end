@@ -7,7 +7,7 @@ Documentacao para consumo pelo frontend da API de avaliacao da Feira de Ciencias
 Servidor local:
 
 ```text
-https://avaliacao-feira-de-ciencias-api.onrender.com
+http://localhost:3000
 ```
 
 Rotas base:
@@ -61,7 +61,7 @@ Retorna `409` quando o avaliador ja estiver atribuido ao projeto.
 
 Remove a atribuicao individual. Retorna `404` se ela nao existir.
 
-### GET `/assignment/evento/:id_evento`
+### GET `/assignment/event/:id_evento`
 
 Lista todas as atribuicoes dos projetos de um evento, incluindo os dados basicos do projeto e do avaliador.
 
@@ -112,7 +112,6 @@ Valores de `tipo_avaliador` para professores:
 
 - `tecnico`
 - `artistico`
-- `convidado`
 
 ### POST `/auth/cadastrar`
 
@@ -242,7 +241,16 @@ O ID da URL deve ser o mesmo ID presente no token.
 
 ### GET `/event/:id_evento/dashboard`
 
-Retorna o painel consolidado do evento. Requer token de coordenador.
+Retorna o painel consolidado de um evento especifico, incluindo resumo das avaliacoes, projetos, dados para grafico e atividades recentes. Requer token JWT de um usuario com perfil `coordenador`.
+
+#### Exemplo de requisicao
+
+```http
+GET http://localhost:3000/event/1/dashboard
+Authorization: Bearer SEU_TOKEN
+```
+
+O `:id_evento` deve ser substituido pelo ID do evento que sera consultado. Atualmente, a rota valida o perfil de coordenador, mas nao valida se o coordenador esta vinculado ao evento informado.
 
 #### Resposta `200`
 
@@ -275,11 +283,39 @@ Retorna o painel consolidado do evento. Requer token de coordenador.
       "percentual_conclusao": "100.0",
       "concluido": true
     }
-  ]
+  ],
+  "grafico": [
+    {
+      "data": "2026-09-10",
+      "avaliacoes": 8
+    }
+  ],
+  "atividades_recentes": [
+    {
+      "tipo": "avaliacao",
+      "mensagem": "Maria Silva avaliou Energia Sustentavel",
+      "data": "2026-09-10T13:00:00.000Z"
+    }
+  ],
+  "notificacoes": []
 }
 ```
 
 Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
+
+`grafico` agrupa a quantidade de avaliacoes por data. `atividades_recentes` lista as dez avaliacoes mais recentes do evento. `notificacoes` e retornado como uma lista vazia enquanto nao houver notificacoes implementadas.
+
+#### Resposta `404`
+
+```json
+{
+  "error": "Evento não encontrado"
+}
+```
+
+#### Resposta `403`
+
+Usuarios que nao possuem perfil `coordenador` nao podem acessar o dashboard.
 
   ### GET `/ranking/:id_evento`
 
@@ -294,7 +330,7 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
   #### Exemplo de requisicao
 
   ```http
-  GET https://avaliacao-feira-de-ciencias-api.onrender.com/ranking/1
+  GET http://localhost:3000/ranking/1
   Authorization: Bearer SEU_TOKEN
   ```
 
@@ -343,6 +379,28 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
 
   Todos os projetos do evento sao listados, inclusive os que ainda nao receberam avaliacao. Projetos sem avaliacao possuem `nota_media` igual a `0`. O valor de `nota_media` representa a soma das pontuacoes das avaliacoes. A `colocacao` e calculada separadamente dentro de cada categoria.
 
+  #### Ranking por indicacao
+
+  A resposta tambem traz o objeto `indicacoes`, com um ranking para cada tipo de indicacao (`jovem_cientista`, `inovacao` e `responsabilidade_social`), considerando o evento inteiro (todas as categorias). Os projetos sao ordenados por quem recebeu mais indicacoes daquele tipo; empates dividem a mesma `colocacao`. Projetos sem nenhuma indicacao do tipo nao aparecem, entao a lista pode vir vazia.
+
+  ```json
+  "indicacoes": {
+    "jovem_cientista": [
+      {
+        "colocacao": "1",
+        "id_projeto": "3",
+        "nome_projeto": "Energia Sustentavel",
+        "estande": "12",
+        "id_categoria": "6",
+        "nome_categoria": "Tecnico em Quimica",
+        "total_indicacoes": 3
+      }
+    ],
+    "inovacao": [],
+    "responsabilidade_social": []
+  }
+  ```
+
   #### Resposta `404`
 
   ```json
@@ -365,7 +423,7 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
   #### Exemplo de requisicao
 
   ```http
-  GET https://avaliacao-feira-de-ciencias-api.onrender.com/ranking/1/6
+  GET http://localhost:3000/ranking/1/6
   Authorization: Bearer SEU_TOKEN
   ```
 
@@ -391,9 +449,16 @@ Os projetos do dashboard sao ordenados pela maior `pontuacao_total`.
         "nota_media": "342.0",
         "total_avaliacoes": 4
       }
-    ]
+    ],
+    "indicacoes": {
+      "jovem_cientista": [],
+      "inovacao": [],
+      "responsabilidade_social": []
+    }
   }
   ```
+
+  `indicacoes` tem o mesmo formato do ranking por evento, mas considera apenas os projetos da categoria.
 
   #### Resposta `404`
 
@@ -452,7 +517,7 @@ Lista todos os projetos de um evento. A resposta inclui as informacoes do projet
 | `id_categoria` | inteiro | Filtra os projetos retornados por uma categoria especifica |
 
 ```http
-GET https://avaliacao-feira-de-ciencias-api.onrender.com/project/1?id_categoria=6
+GET http://localhost:3000/project/1?id_categoria=6
 ```
 
 #### Resposta `200`
@@ -492,7 +557,50 @@ GET https://avaliacao-feira-de-ciencias-api.onrender.com/project/1?id_categoria=
 
 ### GET `/project/id/:id_projeto`
 
-Busca um projeto especifico pelo ID. A resposta tem o mesmo formato de um item da listagem anterior, incluindo `id_categoria` e `nome_categoria`.
+Busca um projeto especifico pelo ID. A resposta tem o mesmo formato de um item da listagem anterior, incluindo `id_categoria` e `nome_categoria`, e adiciona a lista `avaliadores` com os campos `total_atribuidos` e `total_pendentes`.
+
+`avaliadores` contem todos os professores atribuidos ao projeto, **inclusive os que ainda nao avaliaram**, e tambem quem avaliou mas teve a atribuicao removida depois (`atribuido: false`). Os que ja avaliaram aparecem primeiro; quem ainda nao avaliou tem `avaliou: false` e `avaliacao: null`.
+
+```json
+{
+  "id_projeto": "3",
+  "nome_projeto": "Energia Sustentavel",
+  "...": "demais campos do projeto",
+  "avaliadores": [
+    {
+      "id_avaliador": "5",
+      "nome_avaliador": "Maria Souza",
+      "email_avaliador": "maria@escola.com",
+      "tipo_avaliador": "tecnico",
+      "atribuido": true,
+      "data_atribuicao": "2026-09-20T10:00:00.000Z",
+      "avaliou": true,
+      "avaliacao": {
+        "id_avaliacao": "12",
+        "nota1": 9, "nota2": 8, "nota3": 10, "nota4": 9, "nota5": 10, "nota6": 8,
+        "pontuacao_total": 162,
+        "comentario": "Otimo projeto",
+        "indicacao": "jovem_cientista",
+        "data_criacao": "2026-09-29T14:00:00"
+      }
+    },
+    {
+      "id_avaliador": "7",
+      "nome_avaliador": "Joao Lima",
+      "email_avaliador": "joao@escola.com",
+      "tipo_avaliador": "artistico",
+      "atribuido": true,
+      "data_atribuicao": "2026-09-20T10:00:00.000Z",
+      "avaliou": false,
+      "avaliacao": null
+    }
+  ],
+  "total_atribuidos": 2,
+  "total_pendentes": 1
+}
+```
+
+Os itens de `avaliacoes` (aqui e nas listagens de projetos) agora tambem trazem o campo `indicacao`.
 
 ### PUT `/project/:id_projeto`
 
@@ -786,7 +894,7 @@ A rota de exclusao de usuario usa a chave `erro` em alguns retornos:
 ## 11. Exemplo de cliente JavaScript
 
 ```js
-const API_URL = "https://avaliacao-feira-de-ciencias-api.onrender.com";
+const API_URL = "http://localhost:3000";
 
 async function apiFetch(path, options = {}) {
   const token = localStorage.getItem("token");

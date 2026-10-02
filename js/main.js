@@ -313,6 +313,156 @@
         });
     }
 
+    function renderProjectEvaluators(list, evaluators) {
+        list.innerHTML = "";
+        if (!evaluators.length) {
+            list.innerHTML = "<p class=\"api-empty\">Nenhum avaliador atribuído a este projeto.</p>";
+            return;
+        }
+        evaluators.forEach(function (evaluator) {
+            var evaluation = evaluator.avaliacao;
+            var item = document.createElement("div");
+            item.className = "sic-avaliador";
+            item.innerHTML = "<div class=\"sic-avaliador-topo\"><div><strong></strong><span></span></div><span class=\"sic-avaliador-status\"></span></div>";
+            item.querySelector(".sic-avaliador-topo strong").textContent = evaluator.nome_avaliador || "ID " + evaluator.id_avaliador;
+            item.querySelector(".sic-avaliador-topo div span").textContent = (evaluator.email_avaliador || "Sem e-mail") + " - " + (evaluator.tipo_avaliador || "Tipo não informado");
+            var status = item.querySelector(".sic-avaliador-status");
+            status.textContent = evaluator.avaliou ? "Avaliou" : "Pendente";
+            status.classList.add(evaluator.avaliou ? "avaliou" : "pendente");
+            if (evaluator.atribuido === false) {
+                var removed = document.createElement("span");
+                removed.className = "sic-avaliador-status removido";
+                removed.textContent = "Atribuição removida";
+                status.after(removed);
+            }
+            if (evaluator.avaliou && evaluation) {
+                var info = document.createElement("div");
+                info.className = "sic-avaliador-avaliacao";
+                info.innerHTML = "<p><span>Notas</span><b></b></p><p><span>Pontuação</span><b></b></p><p><span>Indicação</span><b></b></p><p class=\"sic-avaliador-comentario\"></p>";
+                var values = info.querySelectorAll("b");
+                values[0].textContent = [1, 2, 3, 4, 5, 6].map(function (index) {
+                    var note = evaluation["nota" + index];
+                    return note === null || note === undefined ? "-" : note;
+                }).join(" / ");
+                values[1].textContent = evaluation.pontuacao_total || "0";
+                values[2].textContent = indicationLabel(evaluation.indicacao);
+                info.querySelector(".sic-avaliador-comentario").textContent = evaluation.comentario ? "Comentário: " + evaluation.comentario : "Sem comentário.";
+                item.appendChild(info);
+            }
+            list.appendChild(item);
+        });
+    }
+
+    function projectDetailUrl(projectId) {
+        return "detalhe-projeto.html?id=" + encodeURIComponent(projectId);
+    }
+
+    function loadProjectDetail() {
+        var page = document.querySelector("#detalhe-projeto");
+        var user = currentUser();
+        if (!page || !user || userRole(user) !== "coordenador" || !api || !api.isConfigured()) return;
+
+        var projectId = new URLSearchParams(window.location.search).get("id");
+        if (!projectId) {
+            window.location.href = "Visualizar-projeto.html";
+            return;
+        }
+
+        api.projects.get(projectId).then(function (project) {
+            if (!project || !project.id_projeto) throw new Error("Projeto não encontrado.");
+            renderProjectDetail(project);
+            if (project.id_evento) window.localStorage.setItem("sic_current_event", project.id_evento);
+            return Promise.all([
+                api.projects.list(project.id_evento).catch(function () { return []; }),
+                api.categories.list().catch(function () { return []; }),
+                getCoordinatorEvents().catch(function () { return []; })
+            ]).then(function (responses) {
+                var categories = Array.isArray(responses[1]) ? responses[1] : (responses[1] && responses[1].data) || [];
+                setupProjectStepper(project, normalizeEvents(responses[0]));
+                setupProjectDetailActions(project, categories, normalizeEvents(responses[2]));
+            });
+        }).catch(function (error) {
+            document.querySelector("#projeto-nome").textContent = "Projeto não encontrado";
+            document.querySelector("#projeto-avaliadores").innerHTML = "<p class=\"api-empty\">Não foi possível carregar o projeto.</p>";
+            showError(error);
+        });
+    }
+
+    function renderProjectDetail(project) {
+        var evaluators = Array.isArray(project.avaliadores) ? project.avaliadores : [];
+        var evaluated = evaluators.filter(function (evaluator) { return evaluator.avaliou; }).length;
+        document.title = (project.nome_projeto || "Projeto") + " - SIC";
+        document.querySelector("#projeto-categoria").textContent = project.nome_categoria || "Sem categoria";
+        document.querySelector("#projeto-nome").textContent = project.nome_projeto || "Projeto sem nome";
+        document.querySelector("#projeto-meta").textContent = "ID " + project.id_projeto + " - Estande " + (project.estande || "-");
+        document.querySelector("#projeto-resumo").textContent = project.resumo || "Sem resumo informado.";
+        document.querySelector("#projeto-pontuacao").textContent = project.pontuacao_total || "0";
+        document.querySelector("#projeto-atribuidos").textContent = Number(project.total_atribuidos) || 0;
+        document.querySelector("#projeto-avaliaram").textContent = evaluated;
+        document.querySelector("#projeto-pendentes").textContent = Number(project.total_pendentes) || 0;
+
+        var indications = document.querySelector("#projeto-indicacoes");
+        var counts = {};
+        evaluators.forEach(function (evaluator) {
+            var type = evaluator.avaliacao && evaluator.avaliacao.indicacao;
+            if (type) counts[type] = (counts[type] || 0) + 1;
+        });
+        var received = indicationTypes.filter(function (type) { return counts[type]; });
+        indications.innerHTML = received.length ? "" : "<p class=\"api-empty\">Nenhuma indicação recebida.</p>";
+        received.forEach(function (type) {
+            var tag = document.createElement("span");
+            tag.className = "projeto-indicacao";
+            tag.innerHTML = "<span></span><b></b>";
+            tag.querySelector("span").textContent = indicationLabel(type);
+            tag.querySelector("b").textContent = counts[type];
+            indications.appendChild(tag);
+        });
+
+        renderProjectEvaluators(document.querySelector("#projeto-avaliadores"), evaluators);
+    }
+
+    function setupProjectStepper(project, projects) {
+        var previous = document.querySelector("#projeto-anterior");
+        var next = document.querySelector("#projeto-proximo");
+        var index = projects.findIndex(function (item) { return String(item.id_projeto) === String(project.id_projeto); });
+        if (index === -1) return;
+        document.querySelector("#projeto-posicao").textContent = "Projeto " + (index + 1) + " de " + projects.length;
+        [[previous, projects[index - 1]], [next, projects[index + 1]]].forEach(function (pair) {
+            var button = pair[0];
+            var target = pair[1];
+            button.disabled = !target;
+            if (!target) return;
+            button.title = target.nome_projeto || "";
+            button.addEventListener("click", function () { window.location.href = projectDetailUrl(target.id_projeto); });
+        });
+        // Setas do teclado navegam entre os projetos, exceto quando um campo ou modal está em uso.
+        document.addEventListener("keydown", function (event) {
+            if (event.target.closest("input, textarea, select, dialog")) return;
+            if (event.key === "ArrowLeft" && !previous.disabled) previous.click();
+            if (event.key === "ArrowRight" && !next.disabled) next.click();
+        });
+    }
+
+    function setupProjectDetailActions(project, categories, events) {
+        var edit = document.querySelector("#projeto-editar");
+        var remove = document.querySelector("#projeto-excluir");
+        edit.disabled = false;
+        remove.disabled = false;
+        edit.addEventListener("click", function () {
+            projectEditModal(project, categories, events, function () { window.location.reload(); });
+        });
+        remove.addEventListener("click", function () {
+            confirmAction("Excluir o projeto " + (project.nome_projeto || "sem nome") + "? Projetos com avaliações não podem ser excluídos.", function () {
+                return api.projects.remove(project.id_projeto).then(function () {
+                    window.location.href = "Visualizar-projeto.html";
+                }).catch(function (error) {
+                    showError(error);
+                    throw error;
+                });
+            });
+        });
+    }
+
     function setupProfessorFilters(professors, list) {
         var search = document.querySelector("#busca-professor");
         var type = document.querySelector("#filtro-tipo-professor");
@@ -754,7 +904,10 @@
                     "<div class=\"status inf\"><p></p></div>" +
                     "<div class=\"pontuacao inf\"><p></p></div>" +
                     "<div class=\"acoes-projeto inf\"></div>";
-                row.querySelector("h4").textContent = project.nome_projeto || "Sem nome";
+                var title = document.createElement("a");
+                title.href = projectDetailUrl(project.id_projeto);
+                title.textContent = project.nome_projeto || "Sem nome";
+                row.querySelector("h4").appendChild(title);
                 row.querySelector(".nome p").textContent = "ID: " + project.id_projeto;
                 row.querySelector(".categoria").textContent = categoryOf(project);
                 row.querySelector(".professores p").textContent = professorOf(project) || (project.total_avaliaram || 0) + "/" + (project.total_avaliadores || 0) + " avaliações";
@@ -768,6 +921,11 @@
         }
 
         function renderProjectActions(container, project) {
+            var details = document.createElement("button");
+            details.type = "button";
+            details.title = "Abrir projeto";
+            details.innerHTML = "<i class=\"fi fi-rr-eye\"></i>";
+            details.addEventListener("click", function () { window.location.href = projectDetailUrl(project.id_projeto); });
             var edit = document.createElement("button");
             edit.type = "button";
             edit.title = "Editar projeto";
@@ -786,6 +944,7 @@
                     });
                 });
             });
+            container.appendChild(details);
             container.appendChild(edit);
             container.appendChild(remove);
         }
@@ -904,6 +1063,7 @@
             "pagina-professor.html",
             "pagina-avaliadores.html",
             "visualizar-projeto.html",
+            "detalhe-projeto.html",
             "registrar-novo-professor.html"
             ,"monitoramento-de-professores.html"
         ];
@@ -1105,10 +1265,12 @@
             card.className = "avaliacao-card";
             card.innerHTML = "<h3></h3><p class=\"avaliacao-meta\"></p><div class=\"notas-avaliacao\"></div>" +
                 "<div class=\"avaliacao-total\"><span>Pontuacao total</span><strong></strong></div>" +
+                "<p class=\"avaliacao-indicacao\"></p>" +
                 "<p class=\"avaliacao-comentario\"></p>";
             card.querySelector("h3").textContent = project.nome_projeto || "Projeto sem nome";
             card.querySelector(".avaliacao-meta").textContent = (project.nome_categoria || "Sem categoria") + " - Estande " + (project.estande || "-");
             card.querySelector(".avaliacao-total strong").textContent = evaluation.pontuacao_total || "0";
+            card.querySelector(".avaliacao-indicacao").textContent = "Indicação: " + indicationLabel(evaluation.indicacao);
             card.querySelector(".avaliacao-comentario").textContent = evaluation.comentario ? "Comentario: " + evaluation.comentario : "Sem comentario informado.";
             var notes = card.querySelector(".notas-avaliacao");
             criteria.forEach(function (criterion, index) {
@@ -1327,6 +1489,17 @@
         return date.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
     }
 
+    var indicationTypes = ["jovem_cientista", "inovacao", "responsabilidade_social"];
+    var indicationLabels = {
+        jovem_cientista: "Jovem Cientista",
+        inovacao: "Inovação",
+        responsabilidade_social: "Responsabilidade Social"
+    };
+
+    function indicationLabel(value) {
+        return indicationLabels[value] || "Sem indicação";
+    }
+
     function loadRanking() {
         var ranking = document.querySelector(".ranking");
         var user = currentUser();
@@ -1418,6 +1591,20 @@
             ]);
         });
 
+        var indications = data.indicacoes || {};
+        indicationTypes.forEach(function (type) {
+            rows.push([], ["Indicação", indicationLabel(type)], ["Posição", "Projeto", "Categoria", "Estande", "Indicações"]);
+            (indications[type] || []).forEach(function (project) {
+                rows.push([
+                    project.colocacao || "-",
+                    project.nome_projeto || "Projeto sem nome",
+                    project.nome_categoria || "Sem categoria",
+                    project.estande || "-",
+                    project.total_indicacoes || 0
+                ]);
+            });
+        });
+
         var csv = "\uFEFF" + rows.map(function (row) {
             return row.map(function (value) {
                 return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
@@ -1484,6 +1671,8 @@
             if (evaluations) evaluations.textContent = (Number(project.total_avaliacoes) || 0) + " avaliação(ões)";
         });
 
+        renderIndicationRanking(data.indicacoes || {});
+
         var list = document.querySelector(".ranking .lista-projetos");
         if (!list) return;
         list.innerHTML = "";
@@ -1493,6 +1682,37 @@
         }
         projects.slice(3).forEach(function (project) {
             list.appendChild(createRankingRow(project));
+        });
+    }
+
+    function renderIndicationRanking(indications) {
+        var container = document.querySelector("#ranking-indicacoes");
+        if (!container) return;
+        container.innerHTML = "";
+        indicationTypes.forEach(function (type) {
+            var card = document.createElement("article");
+            card.className = "indicacao-card";
+            card.innerHTML = "<h3></h3><ol></ol>";
+            card.querySelector("h3").textContent = indicationLabel(type);
+            var list = card.querySelector("ol");
+            var projects = Array.isArray(indications[type]) ? indications[type] : [];
+            if (!projects.length) {
+                list.outerHTML = "<p class=\"indicacao-vazio\">Nenhuma indicação registrada.</p>";
+            }
+            projects.forEach(function (project) {
+                var total = Number(project.total_indicacoes) || 0;
+                var item = document.createElement("li");
+                item.className = "indicacao-item";
+                item.innerHTML = "<span class=\"indicacao-posicao\"></span>" +
+                    "<div class=\"indicacao-projeto\"><strong></strong><span></span></div>" +
+                    "<span class=\"indicacao-total\"></span>";
+                item.querySelector(".indicacao-posicao").textContent = project.colocacao || "-";
+                item.querySelector(".indicacao-projeto strong").textContent = project.nome_projeto || "Projeto sem nome";
+                item.querySelector(".indicacao-projeto span").textContent = (project.nome_categoria || "Sem categoria") + " - Estande " + (project.estande || "-");
+                item.querySelector(".indicacao-total").textContent = total + (total === 1 ? " indicação" : " indicações");
+                list.appendChild(item);
+            });
+            container.appendChild(card);
         });
     }
 
@@ -1591,6 +1811,7 @@
     if (document.querySelector("#lista-avaliadores-api")) loadCoordinatorEvaluators();
     if (document.querySelector("#monitor-professor")) loadProfessorMonitoring();
     if (document.querySelector("#lista-projetos-api")) loadCoordinatorProjects();
+    if (document.querySelector("#detalhe-projeto")) loadProjectDetail();
     if (document.querySelector(".projetos-lista-api")) loadProfessorProjects();
     if (document.querySelector("#minhas-avaliacoes")) loadMyEvaluations();
     if (document.querySelector("body.app-mobile main")) loadEvaluationForm();

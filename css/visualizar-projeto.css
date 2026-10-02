@@ -61,7 +61,7 @@
 .abas,
 .registro {
     display: grid;
-    grid-template-columns: minmax(220px, 2fr) minmax(130px, 1fr) minmax(160px, 1.2fr) minmax(220px, 1.5fr) 130px 110px 82px;
+    grid-template-columns: minmax(220px, 2fr) minmax(130px, 1fr) minmax(160px, 1.2fr) minmax(220px, 1.5fr) 130px 110px 116px;
     align-items: center;
     gap: 16px;
 }
@@ -192,4 +192,14 @@
 .box-main > .lista:not(#lista-projetos-api),
 .box-main .button-nav {
     display: none;
+}
+
+.registro .nome h4 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.registro .nome h4 a:hover {
+    color: var(--sic-accent);
+    text-decoration: underline;
 }

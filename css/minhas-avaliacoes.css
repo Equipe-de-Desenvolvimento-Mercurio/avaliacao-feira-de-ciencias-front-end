@@ -101,6 +101,13 @@ body.app-mobile {
     font-size: 18px;
 }
 
+.avaliacao-indicacao {
+    margin-top: 12px;
+    color: var(--sic-ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .avaliacao-comentario {
     margin-top: 12px;
     color: var(--sic-muted);

@@ -372,6 +372,91 @@ dialog#sic-modal::backdrop {
     line-height: 1.6;
 }
 
+.sic-avaliadores-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sic-avaliador {
+    padding: 12px 14px;
+    border: 1px solid var(--sic-line);
+    border-radius: var(--sic-radius);
+}
+
+.sic-avaliador-topo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.sic-avaliador-topo > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.sic-avaliador-topo strong {
+    display: block;
+    font-size: 14px;
+}
+
+.sic-avaliador-topo div span {
+    color: var(--sic-muted);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.sic-avaliador-status {
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sic-avaliador-status.avaliou {
+    color: var(--sic-success);
+    background: var(--sic-success-soft);
+}
+
+.sic-avaliador-status.pendente {
+    color: var(--sic-warning);
+    background: var(--sic-warning-soft);
+}
+
+.sic-avaliador-status.removido {
+    color: var(--sic-muted);
+    background: var(--sic-background);
+}
+
+.sic-avaliador-avaliacao {
+    display: grid;
+    gap: 4px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--sic-line);
+    font-size: 12px;
+}
+
+.sic-avaliador-avaliacao p {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.sic-avaliador-avaliacao span,
+.sic-avaliador-comentario {
+    color: var(--sic-muted);
+}
+
+.sic-avaliador-avaliacao p.sic-avaliador-comentario {
+    display: block;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
 /* ── Admin layout (sidebar + main) ── */
 body:has(.navegador) {
     display: flex;

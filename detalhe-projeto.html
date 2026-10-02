@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/detalhe-projeto.css">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css">
+    <link rel="shortcut icon" href="assets/images/favicon-mercurio.png " type="image/x-icon">
+    <title>Projeto SIC</title>
+    <script src="js/config.js" defer></script>
+    <script src="js/services/service.js" defer></script>
+    <script src="js/utils/util.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <div class="navegador">
+        <div class="logo">
+            <img src="assets/images/Logo-mercurio.jpg" alt="Logo Mercúrio">
+            <div class="texto-logo">
+                <h3>Colégio Mercúrio</h3>
+                <p>Plataforma Sic</p>
+            </div>
+        </div>
+        <div id="navegador">
+            <button class="btn"><i class="fi fi-sr-square-poll-vertical"></i>DashBoard</button>
+            <button class="btn"><i class="fi fi-bs-flask"></i>Projetos</button>
+            <button class="btn"><i class="fi fi-sr-user"></i>Professores</button>
+            <button class="btn"><i class="fi fi-sr-chart-simple"></i>Rank</button>
+        </div>
+    </div>
+    <div class="pagina-principal">
+        <header>
+            <div class="cabeca">
+                <h2>SIC Manegement</h2>
+            </div>
+            <div class="icon">
+                <i class="fi fi-rs-bell"></i>
+                <i class="fi fi-rr-settings"></i>
+                <div class="perfil1"></div>
+            </div>
+        </header>
+        <main id="detalhe-projeto">
+            <nav class="projeto-navegacao" aria-label="Navegação entre projetos">
+                <a class="projeto-voltar" href="Visualizar-projeto.html"><i class="fi fi-rr-arrow-small-left"></i>Todos os projetos</a>
+                <div class="projeto-passos">
+                    <button type="button" id="projeto-anterior" disabled><i class="fi fi-rr-angle-small-left"></i>Anterior</button>
+                    <span id="projeto-posicao">-</span>
+                    <button type="button" id="projeto-proximo" disabled>Próximo<i class="fi fi-rr-angle-small-right"></i></button>
+                </div>
+            </nav>
+
+            <section class="projeto-cabecalho">
+                <div>
+                    <p class="projeto-categoria" id="projeto-categoria">-</p>
+                    <h1 id="projeto-nome">Carregando projeto...</h1>
+                    <p class="projeto-meta" id="projeto-meta"></p>
+                    <p class="projeto-resumo" id="projeto-resumo"></p>
+                </div>
+                <div class="projeto-acoes">
+                    <button type="button" id="projeto-editar" disabled><i class="fi fi-rr-pencil"></i>Editar</button>
+                    <button type="button" id="projeto-excluir" class="acao-perigo" disabled><i class="fi fi-rr-trash"></i>Excluir</button>
+                </div>
+            </section>
+
+            <section class="projeto-resumo-cards" aria-label="Resumo do projeto">
+                <div><span>Pontuação total</span><strong id="projeto-pontuacao">-</strong></div>
+                <div><span>Avaliadores atribuídos</span><strong id="projeto-atribuidos">-</strong></div>
+                <div><span>Já avaliaram</span><strong id="projeto-avaliaram">-</strong></div>
+                <div><span>Pendentes</span><strong id="projeto-pendentes">-</strong></div>
+            </section>
+
+            <section class="projeto-bloco">
+                <h2>Indicações recebidas</h2>
+                <div id="projeto-indicacoes" class="projeto-indicacoes"></div>
+            </section>
+
+            <section class="projeto-bloco">
+                <h2>Avaliadores</h2>
+                <div id="projeto-avaliadores" class="sic-avaliadores-lista">
+                    <p class="api-empty">Carregando avaliadores...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>
